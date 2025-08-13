@@ -1,8 +1,8 @@
-package com.dabom.reply.controller;
+package com.dabom.boardcomment.controller;
 
 import com.dabom.common.BaseResponse;
-import com.dabom.reply.model.dto.BoardCommentCreateRequestDto;
-import com.dabom.reply.service.BoardCommentService;
+import com.dabom.boardcomment.model.dto.BoardCommentCreateRequestDto;
+import com.dabom.boardcomment.service.BoardCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

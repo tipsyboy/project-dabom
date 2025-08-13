@@ -1,6 +1,6 @@
-package com.dabom.reply.model.dto;
+package com.dabom.boardcomment.model.dto;
 
-import com.dabom.reply.model.entity.BoardComment;
+import com.dabom.boardcomment.model.entity.BoardComment;
 import lombok.Builder;
 import lombok.Getter;
 

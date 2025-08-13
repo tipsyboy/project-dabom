@@ -1,4 +1,4 @@
-package com.dabom.reply.model.entity;
+package com.dabom.boardcomment.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,6 +1,6 @@
-package com.dabom.reply.repository;
+package com.dabom.boardcomment.repository;
 
-import com.dabom.reply.model.entity.BoardComment;
+import com.dabom.boardcomment.model.entity.BoardComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoardCommentRepository extends JpaRepository<BoardComment, Integer> {
