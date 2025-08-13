@@ -8,14 +8,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//@Tag(name = "게시글 댓글")
 @RestController
-@RequestMapping("/reply")
+@RequestMapping("/comment")
 @RequiredArgsConstructor
 public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
 
-
+//    @Operation(
+//            summary = "게시글 댓글 기능",
+//            description = "게시글 댓글 동록"
+//    )
     @PostMapping("/create/{boardIdx}")
     public ResponseEntity<BaseResponse<Integer>> create(@RequestBody BoardCommentCreateRequestDto dto,
                                                         @PathVariable Integer boardIdx) {
@@ -30,6 +34,12 @@ public class BoardCommentController {
 //
 //        return ResponseEntity.ok("굿");
 //    }
+
+
+    //    @Operation(
+//            summary = "게시글 댓글 기능",
+//            description = "게시글 댓글 삭제"
+//    )
     @DeleteMapping("/delete/{commentIdx}")
     public ResponseEntity<Void> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);
