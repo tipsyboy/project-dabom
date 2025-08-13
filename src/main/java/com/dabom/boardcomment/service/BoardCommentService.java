@@ -1,13 +1,11 @@
-package com.dabom.reply.service;
+package com.dabom.boardcomment.service;
 
-import com.dabom.reply.model.dto.BoardCommentCreateRequestDto;
-import com.dabom.reply.model.dto.BoardCommentListResponseDto;
-import com.dabom.reply.model.entity.BoardComment;
-import com.dabom.reply.repository.BoardCommentRepository;
+import com.dabom.boardcomment.model.dto.BoardCommentCreateRequestDto;
+import com.dabom.boardcomment.model.entity.BoardComment;
+import com.dabom.boardcomment.repository.BoardCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

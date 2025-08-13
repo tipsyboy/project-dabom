@@ -1,4 +1,4 @@
-package com.dabom.reply.model.dto;
+package com.dabom.boardcomment.model.dto;
 
 
 public class BoardCommentUpdateRequestDto {
