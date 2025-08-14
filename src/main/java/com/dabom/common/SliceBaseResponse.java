@@ -1,7 +1,9 @@
 package com.dabom.common;
 
-import java.util.List;
+import lombok.Getter;
 
+import java.util.List;
+@Getter
 public class SliceBaseResponse<T> {
     private List<T> content;
     private boolean hasNext;

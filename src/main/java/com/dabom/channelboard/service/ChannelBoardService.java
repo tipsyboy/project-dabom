@@ -5,8 +5,12 @@ import com.dabom.channelboard.model.dto.ChannelBoardRegisterRequestDto;
 import com.dabom.channelboard.model.dto.ChannelBoardUpdateRequestDto;
 import com.dabom.channelboard.model.entity.ChannelBoard;
 import com.dabom.channelboard.repositroy.ChannelBoardRepository;
+import com.dabom.common.SliceBaseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +26,15 @@ public class ChannelBoardService {
         return result.getIdx();
     }
 
-    public List<ChannelBoardReadResponseDto> list(Integer page, Integer size) {
-        //Slice<ChannelBoardListResponseDto> response = result.map(ChannelBoardListResponseDto::from);
-        //무한스크롤을 위한 임시 코드;
-        List<ChannelBoard> result = channelBoardRepository.findAll();
+    public SliceBaseResponse<ChannelBoardReadResponseDto> list(Integer page, Integer size) {
+        Page<ChannelBoard> result = channelBoardRepository.findAll(PageRequest.of(page,size));
 
-        return result.stream().map(ChannelBoardReadResponseDto::from).toList();
+        List<ChannelBoardReadResponseDto> content = result.getContent()
+                .stream().map(ChannelBoardReadResponseDto::from).toList();
+
+        boolean hasNext = result.hasNext();
+
+        return new SliceBaseResponse<>(content, hasNext);
     }
 
     public ChannelBoardReadResponseDto read(Integer idx) {

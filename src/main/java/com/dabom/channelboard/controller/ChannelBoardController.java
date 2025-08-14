@@ -5,6 +5,7 @@ import com.dabom.channelboard.model.dto.ChannelBoardRegisterRequestDto;
 import com.dabom.channelboard.model.dto.ChannelBoardUpdateRequestDto;
 import com.dabom.channelboard.service.ChannelBoardService;
 import com.dabom.common.BaseResponse;
+import com.dabom.common.SliceBaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,11 @@ public class ChannelBoardController {
 
     @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<ChannelBoardReadResponseDto>>> list(
+    public ResponseEntity<BaseResponse<SliceBaseResponse<ChannelBoardReadResponseDto>>> list(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size
     ) {
-        List<ChannelBoardReadResponseDto> result = channelBoardService.list(page, size);
+        SliceBaseResponse<ChannelBoardReadResponseDto> result = channelBoardService.list(page, size);
 
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }
