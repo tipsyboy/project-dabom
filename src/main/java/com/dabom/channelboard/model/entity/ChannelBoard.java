@@ -34,6 +34,4 @@ public class ChannelBoard {
     private List<BoardComment> boardCommentList;
 
 
-
-
 }
