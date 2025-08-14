@@ -1,18 +1,19 @@
 package com.dabom.member.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.dabom.channelboard.model.entity.ChannelBoard;
+import com.dabom.common.BaseEntity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
@@ -21,7 +22,19 @@ public class Member {
     private String name;
     private String password;
     private MemberRole memberRole;
-//    private Channel channel;
+
+    // 내가 구독한 사람
+    @OneToMany(mappedBy = "subscriber", fetch = FetchType.LAZY)
+    private List<Subscribe> subscribes;
+    // 나를 구독한 사람
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    private List<Subscribe> subscriptions;
+    // 채널에 올라가는 게시글 모음
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    private List<ChannelBoard> channelBoards;
+
+    private Long sumScore;
+    private Long sumScoreMember;
 //    private ImageFile profileImage;
     private Boolean isDeleted;
 
@@ -31,11 +44,18 @@ public class Member {
         this.name = name;
         this.password = password;
         this.memberRole = MemberRole.valueOf(memberRole);
+        this.sumScore = 0L;
+        this.sumScoreMember = 0L;
         this.isDeleted = false;
     }
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void voidScore(Long score) {
+        this.sumScore += score;
+        this.sumScoreMember++;
     }
 
     public void deleteMember() {
