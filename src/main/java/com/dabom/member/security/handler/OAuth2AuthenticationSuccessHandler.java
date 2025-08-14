@@ -2,7 +2,6 @@ package com.dabom.member.security.handler;
 
 import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.member.util.JwtUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +25,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String jwt = JwtUtils.generateToken(dto.getIdx(), dto.getEmail(), dto.getMemberRole());
 
         if (jwt != null) {
+            Cookie removeCookie = new Cookie("JSESSIONID","");
+            removeCookie.setMaxAge(0);
             Cookie cookie = new Cookie(ACCESS_TOKEN, jwt);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
+
             response.addCookie(cookie);
-            response.getWriter().write(new ObjectMapper().writeValueAsString(""));
+            response.addCookie(removeCookie);
+            response.setContentType("text/html");
+            response.getWriter().write(
+                    "<script>" +
+                            "window.opener.location.href = 'http://localhost:5174';" + // 메인 페이지 URL
+                            "window.close();" +
+                            "</script>"
+            );
         }
     }
 }

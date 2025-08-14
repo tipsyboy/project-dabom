@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,8 +33,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
-                "http://192.0.0.114:5173",
-                "http://localhost:5173"
+                "http://localhost:5174"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -52,24 +52,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         JwtAuthFilter jwtAuthFilter = new JwtAuthFilter();
-//        http.oauth2Login(
-//                config -> {
-//                    config.userInfoEndpoint(
-//                            endpoint -> endpoint.userService(oauth2UserService)
-//                    );
-//                    config.successHandler(oAuth2AuthenticationSuccessHandler);
-//                }
-//        );
+        http.oauth2Login(
+                config -> {
+                    config.userInfoEndpoint(
+                            endpoint -> endpoint.userService(oauth2UserService)
+                    );
+                    config.successHandler(oAuth2AuthenticationSuccessHandler);
+                }
+        );
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors ->
                         cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
                                 .requestMatchers("/member/login").permitAll()
                                 .requestMatchers("/member/signup").permitAll()
+                                .requestMatchers("/oauth2/authorization/**").permitAll()
+                                .requestMatchers("/api/*").permitAll()
                                 .requestMatchers("/swagger/*").permitAll()
 
                                 .requestMatchers("/channel/board/*").permitAll()

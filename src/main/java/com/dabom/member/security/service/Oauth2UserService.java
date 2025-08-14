@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,15 +21,23 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        String social = userRequest.getClientRegistration().getRegistrationId();
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+        if(Objects.equals(social, "google")) {
+            String name = (String) attributes.get("name");
+            String id = attributes.get("email").toString();
+            Member member = loginOrSignupMember(id, name);
+            return MemberDetailsDto.createFromOauth2(member, attributes);
+        } else {
+//        } else if (social == "kakao") {
+            Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        String name = (String) properties.get("nickname");
-        String id = attributes.get("id").toString();
-        Member member = loginOrSignupMember(id, name);
-
-        return MemberDetailsDto.createFromOauth2(member, attributes);
+            String name = (String) properties.get("nickname");
+            String id = attributes.get("id").toString();
+            Member member = loginOrSignupMember(id, name);
+            return MemberDetailsDto.createFromOauth2(member, attributes);
+        }
     }
 
     private Member loginOrSignupMember(String id, String name) {
@@ -36,6 +45,8 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
         if(optionalMember.isEmpty()) {
             Member newMember = Member.builder()
                     .email(id)
+                    .password(null)
+                    .memberRole("USER")
                     .name(name)
                     .build();
             return repository.save(newMember);
