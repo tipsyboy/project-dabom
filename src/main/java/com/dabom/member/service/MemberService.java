@@ -14,16 +14,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository repository;
     private final AuthenticationManager manager;
     private final PasswordEncoder encoder;
 
+    @Transactional
     public void signUpMember(MemberSignupRequestDto dto) {
         String encodedPassword = encoder.encode(dto.password());
         repository.save(dto.toEntity(encodedPassword));
@@ -44,12 +47,14 @@ public class MemberService {
         return MemberInfoResponseDto.toDto(member);
     }
 
+    @Transactional
     public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateNameRequestDto dto) {
         Member member = getMemberFromSecurity(memberDetailsDto);
         member.updateName(dto.name());
         repository.save(member);
     }
 
+    @Transactional
     public void deleteMember(MemberDetailsDto dto) {
         Member member = getMemberFromSecurity(dto);
         member.deleteMember();
