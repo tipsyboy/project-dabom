@@ -1,9 +1,7 @@
 package com.dabom.boardcomment.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.dabom.channelboard.model.entity.ChannelBoard;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,16 +15,21 @@ public class BoardComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
     private String content;
-    private Boolean isDelete;
+    private Boolean isDeleted;
+
+    @ManyToOne
+    @JoinColumn(name = "board_idx")
+    private ChannelBoard board;
 
     @Builder
-    public BoardComment(String content) {
+    public BoardComment(String content, ChannelBoard board) {  // board 매개변수 추가
         this.content = content;
-        this.isDelete = true;
+        this.board = board;
+        this.isDeleted = false;
     }
 
     public void delete() {
-        this.isDelete = false;
+        this.isDeleted = true;
     }
 
 }
