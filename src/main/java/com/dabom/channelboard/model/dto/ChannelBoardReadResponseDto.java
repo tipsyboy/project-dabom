@@ -12,6 +12,7 @@ public class ChannelBoardReadResponseDto {
     private String title;
     private String contents;
     private String createAt;
+    private Integer commentCount;
 
     public static ChannelBoardReadResponseDto from(ChannelBoard entity) {
         return ChannelBoardReadResponseDto.builder()
@@ -19,6 +20,7 @@ public class ChannelBoardReadResponseDto {
                 .title(entity.getTitle())
                 .contents(entity.getContents())
                 .createAt(entity.getCreateAt())
+                .commentCount(entity.getBoardCommentList().size())
                 .build();
     }
 }
