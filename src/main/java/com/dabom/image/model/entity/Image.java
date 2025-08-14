@@ -22,6 +22,7 @@ public class Image {
     private String imagePath;
     private Long fileSize;
     private Boolean isDeleted;
+
     @Builder
     public Image(Integer idx, String originalName, String imageName, String imageUrl, String imagePath, Long fileSize) {
         this.idx = idx;
@@ -31,5 +32,8 @@ public class Image {
         this.imagePath = imagePath;
         this.fileSize = fileSize;
         this.isDeleted = false;
+    }
+    public void safeDelete() {
+        this.isDeleted = true;
     }
 }

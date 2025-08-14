@@ -37,10 +37,10 @@ public class ChannelBoardController {
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }
 
-    @GetMapping("/read")
-    public ResponseEntity<ChannelBoardReadResponseDto> read(@RequestParam Integer idx) {
+    @GetMapping("/read/{boardidx}")
+    public ResponseEntity<ChannelBoardReadResponseDto> read(@RequestParam Integer boardidx) {
 
-        ChannelBoardReadResponseDto result = channelBoardService.read(idx);
+        ChannelBoardReadResponseDto result = channelBoardService.read(boardidx);
         if (result == null) {
             return ResponseEntity.notFound().build();
         }
@@ -53,9 +53,9 @@ public class ChannelBoardController {
         return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK));
     }
 
-    @GetMapping("/delete")
-    public ResponseEntity<Void> delete(@RequestParam Integer idx) {
-        channelBoardService.delete(idx);
+    @GetMapping("/delete/{boardidx}")
+    public ResponseEntity<Void> delete(@RequestParam Integer boardidx) {
+        channelBoardService.delete(boardidx);
         return ResponseEntity.ok(null);
     }
 
