@@ -30,6 +30,8 @@ public class BoardCommentController {
 //
 //        return ResponseEntity.ok("굿");
 //    }
+
+
     @DeleteMapping("/delete/{commentIdx}")
     public ResponseEntity<Void> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);
