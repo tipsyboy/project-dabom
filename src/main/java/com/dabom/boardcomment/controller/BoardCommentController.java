@@ -23,7 +23,7 @@ public class BoardCommentController {
 
         return ResponseEntity.ok(BaseResponse.of(idx, HttpStatus.OK, "ihkljh"));
     }
-
+// 안녕하세요
 //    @PostMapping("/update")
 //    public ResponseEntity update(@RequestBody ReplyCreateRequestDto dto) {
 //        replyService.update(dto);
