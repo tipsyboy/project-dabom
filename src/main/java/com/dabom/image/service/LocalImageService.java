@@ -82,8 +82,13 @@ public class LocalImageService implements ImageService {
     }
 
     @Override
-    public String deleteImage(Integer idx) {
-        return "";
+    public void deleteImage(Integer idx) {
+        Optional<Image> result = imageRepository.findById(idx);
+        if (result.isPresent()) {
+            Image delImg = result.get();
+            delImg.safeDelete();
+        }
+        else throw new RuntimeException();
     }
 
 }

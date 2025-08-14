@@ -12,7 +12,7 @@ public interface ImageService {
     public ImageUploadResponseDto uploadSingleImage(MultipartFile file, String directory) throws IOException;
     public List<ImageUploadResponseDto> uploadMultipleImages(List<MultipartFile> files, String directory);
 
-    public String deleteImage(@RequestParam Integer idx);
+    public void deleteImage(@RequestParam Integer idx);
 
     String find(Integer idx);
 }
