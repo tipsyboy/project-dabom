@@ -23,13 +23,15 @@ public class BoardCommentController {
 
         return ResponseEntity.ok(BaseResponse.of(idx, HttpStatus.OK, "ihkljh"));
     }
-
+// 안녕하세요
 //    @PostMapping("/update")
 //    public ResponseEntity update(@RequestBody ReplyCreateRequestDto dto) {
 //        replyService.update(dto);
 //
 //        return ResponseEntity.ok("굿");
 //    }
+
+
     @DeleteMapping("/delete/{commentIdx}")
     public ResponseEntity<Void> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);

@@ -12,7 +12,7 @@ public class BoardCommentCreateRequestDto {
     public BoardComment toEntity(ChannelBoard board) {
         return BoardComment.builder()
                 .content(content)
-                .board(board)
+                .channelBoard(board)
                 .build();
     }
 }
