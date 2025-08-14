@@ -1,0 +1,67 @@
+package com.dabom.member.service;
+
+import com.dabom.member.model.dto.MemberInfoResponseDto;
+import com.dabom.member.model.dto.MemberLoginRequestDto;
+import com.dabom.member.model.dto.MemberSignupRequestDto;
+import com.dabom.member.model.dto.MemberUpdateNameRequestDto;
+import com.dabom.member.model.entity.Member;
+import com.dabom.member.repository.MemberRepository;
+import com.dabom.member.security.dto.MemberDetailsDto;
+import com.dabom.member.util.JwtUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class MemberService {
+    private final MemberRepository repository;
+    private final AuthenticationManager manager;
+    private final PasswordEncoder encoder;
+
+    public void signUpMember(MemberSignupRequestDto dto) {
+        String encodedPassword = encoder.encode(dto.password());
+        repository.save(dto.toEntity(encodedPassword));
+    }
+
+    public String loginMember(MemberLoginRequestDto dto) {
+        UsernamePasswordAuthenticationToken token =
+                new UsernamePasswordAuthenticationToken(dto.email(), dto.password(), null);
+        Authentication authenticate = manager.authenticate(token);
+        MemberDetailsDto userDto = (MemberDetailsDto) authenticate.getPrincipal();
+
+        return JwtUtils.generateToken(userDto.getIdx(), userDto.getEmail(), userDto.getMemberRole());
+    }
+
+    public MemberInfoResponseDto readMemberInfo(MemberDetailsDto dto) {
+        Member member = getMemberFromSecurity(dto);
+
+        return MemberInfoResponseDto.toDto(member);
+    }
+
+    public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateNameRequestDto dto) {
+        Member member = getMemberFromSecurity(memberDetailsDto);
+        member.updateName(dto.name());
+        repository.save(member);
+    }
+
+    public void deleteMember(MemberDetailsDto dto) {
+        Member member = getMemberFromSecurity(dto);
+        member.deleteMember();
+        repository.save(member);
+    }
+
+    private Member getMemberFromSecurity(MemberDetailsDto dto) {
+        Integer idx = dto.getIdx();
+        Optional<Member> optionalMember = repository.findById(idx);
+        if(optionalMember.isEmpty()) {
+            throw new RuntimeException();
+        }
+        return optionalMember.get();
+    }
+}
