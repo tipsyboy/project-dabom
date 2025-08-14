@@ -19,12 +19,12 @@ public class BoardComment {
 
     @ManyToOne
     @JoinColumn(name = "board_idx")
-    private ChannelBoard board;
+    private ChannelBoard channelBoard;
 
     @Builder
-    public BoardComment(String content, ChannelBoard board) {  // board 매개변수 추가
+    public BoardComment(String content, ChannelBoard channelBoard) {  // board 매개변수 추가
         this.content = content;
-        this.board = board;
+        this.channelBoard = channelBoard;
         this.isDeleted = false;
     }
 
