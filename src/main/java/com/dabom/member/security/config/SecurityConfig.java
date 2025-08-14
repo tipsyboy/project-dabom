@@ -76,6 +76,11 @@ public class SecurityConfig {
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
                                 .requestMatchers("/api/*").permitAll()
                                 .requestMatchers("/swagger/*").permitAll()
+
+                                .requestMatchers("/channel/board/*").permitAll()
+
+                                
+
                                 .anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
