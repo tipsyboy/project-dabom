@@ -11,18 +11,18 @@ public class VideoCommentRegisterDto {
     private Integer userIdx;
 
     public VideoComment toEntity(){
-        Video video = Video.builder()
-                .idx(videoIdx)
-                .build();
-
-        User user = User.builder()
-                .idx(userIdx)
-                .build();
+//        Video video = Video.builder()
+//                .idx(videoIdx)
+//                .build();
+//
+//        User user = User.builder()
+//                .idx(userIdx)
+//                .build();
 
         VideoComment entity = VideoComment.builder()
                 .content(content)
-                .video(video)
-                .user(user)
+//                .video(video)
+//                .user(user)
                 .isDeleted(false)
                 .build();
         return entity;
