@@ -14,13 +14,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ChannelBoardService
-{
+public class ChannelBoardService {
     private final ChannelBoardRepository channelBoardRepository;
-    
-    public void register(ChannelBoardRegisterRequestDto dto)
-    {
-        channelBoardRepository.save(dto.toEntity());
+
+    public Integer register(ChannelBoardRegisterRequestDto dto) {
+        ChannelBoard result = channelBoardRepository.save(dto.toEntity());
+        return result.getIdx();
     }
 
     public List<ChannelBoardReadResponseDto> list(Integer page, Integer size) {
@@ -35,26 +34,25 @@ public class ChannelBoardService
         Optional<ChannelBoard> result = channelBoardRepository.findById(idx);
         if (result.isPresent()) {
             return ChannelBoardReadResponseDto.from(result.get());
-        }
-        else{
+        } else {
             throw new EntityNotFoundException("해당 게시글이 존재하지 않습니다: " + idx);
         }
     }
 
-    public void update(ChannelBoardUpdateRequestDto dto) {
-        channelBoardRepository.save(dto.toEntity());
+    public Integer update(ChannelBoardUpdateRequestDto dto) {
+        ChannelBoard result = channelBoardRepository.save(dto.toEntity());
+        return result.getIdx();
     }
 
     public void delete(Integer idx) {
         Optional<ChannelBoard> result = channelBoardRepository.findById(idx);
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             ChannelBoard board = result.get();
             ChannelBoardUpdateRequestDto dto = new ChannelBoardUpdateRequestDto();
             ChannelBoard deleteBoard = dto.softDelete(board);
             channelBoardRepository.save(deleteBoard);
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("해당 게시글이 존재하지 않습니다: " + idx);
         }
 
