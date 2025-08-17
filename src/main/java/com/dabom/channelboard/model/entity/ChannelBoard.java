@@ -3,6 +3,7 @@ package com.dabom.channelboard.model.entity;
 import com.dabom.boardcomment.model.entity.BoardComment;
 import jakarta.persistence.*;
 import lombok.*;
+import com.dabom.member.model.entity.Member;
 
 import java.util.List;
 
@@ -33,5 +34,8 @@ public class ChannelBoard {
     @OneToMany(mappedBy = "channelBoard")
     private List<BoardComment> boardCommentList;
 
+    @ManyToOne
+    @JoinColumn(name = "Member_idx")
+    private Member channel;
 
 }

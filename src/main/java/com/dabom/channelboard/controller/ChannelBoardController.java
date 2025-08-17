@@ -26,7 +26,7 @@ public class ChannelBoardController {
         return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK));
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
+
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<SliceBaseResponse<ChannelBoardReadResponseDto>>> list(
             @RequestParam(defaultValue = "0") Integer page,
@@ -38,13 +38,13 @@ public class ChannelBoardController {
     }
 
     @GetMapping("/read/{boardidx}")
-    public ResponseEntity<ChannelBoardReadResponseDto> read(@RequestParam Integer boardidx) {
+    public ResponseEntity<BaseResponse<ChannelBoardReadResponseDto>> read(@PathVariable Integer boardidx) {
 
         ChannelBoardReadResponseDto result = channelBoardService.read(boardidx);
         if (result == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK,"게시글 검색완료"));
     }
 
     @PostMapping("/update")
@@ -54,7 +54,7 @@ public class ChannelBoardController {
     }
 
     @GetMapping("/delete/{boardidx}")
-    public ResponseEntity<Void> delete(@RequestParam Integer boardidx) {
+    public ResponseEntity<Void> delete(@PathVariable Integer boardidx) {
         channelBoardService.delete(boardidx);
         return ResponseEntity.ok(null);
     }

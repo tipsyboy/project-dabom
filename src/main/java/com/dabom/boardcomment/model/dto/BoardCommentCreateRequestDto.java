@@ -15,4 +15,10 @@ public class BoardCommentCreateRequestDto {
                 .channelBoard(board)
                 .build();
     }
+
+    public BoardComment toEntity() {
+        return BoardComment.builder()
+                .content(content)
+                .build();
+    }
 }

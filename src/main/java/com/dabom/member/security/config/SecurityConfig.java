@@ -74,12 +74,11 @@ public class SecurityConfig {
                                 .requestMatchers("/member/login").permitAll()
                                 .requestMatchers("/member/signup").permitAll()
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
-                                .requestMatchers("/api/*").permitAll()
-                                .requestMatchers("/swagger/*").permitAll()
+                                .requestMatchers("/api/**").permitAll()
 
-                                .requestMatchers("/channel/board/*").permitAll()
-
-                                
+                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/swagger-resources/**", "/webjars/**").permitAll()
+                                .requestMatchers("/channel/board/**").permitAll()
 
                                 .anyRequest()
                                 .authenticated())
