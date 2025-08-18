@@ -52,7 +52,7 @@ public final class SwaggerConstants {
                 }
             """;
 
-    public static final String BOARD_COMMENT_UPDATE_RESPONSE ="""
+    public static final String BOARD_COMMENT_UPDATE_RESPONSE = """
             {
                 "data": {
                     "idx": 25,
@@ -71,6 +71,28 @@ public final class SwaggerConstants {
                 "data": null,
                 "code": 200,
                 "message": "댓글 삭제 성공"
+            }
+            """;
+    public static final String BOARD_COMMENT_LIST_RESPONSE = """
+            {
+                "data": [
+                    {
+                        "idx": 24,
+                        "content": null,
+                        "createdAt": "2025-08-17 13:05:07",
+                        "updatedAt": "2025-08-17 13:05:07",
+                        "isModified": false
+                    },
+                    {
+                        "idx": 23,
+                        "content": "수정된 댓글",
+                        "createdAt": "2025-08-17 13:04:55",
+                        "updatedAt": "2025-08-17 21:58:22",
+                        "isModified": true
+                    }
+                ],
+                "code": 200,
+                "message": "댓글 조회 성공"
             }
             """;
 }

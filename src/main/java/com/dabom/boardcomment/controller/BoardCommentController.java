@@ -89,7 +89,7 @@ public class BoardCommentController {
     }
 
     @Operation(
-            summary = "댓글 페이지네이션 조회",
+            summary = "댓글 무한 스크롤",
             description = "무한 스크롤을 위한 페이지네이션된 댓글 목록 조회"
     )
     @GetMapping("/list/{boardIdx}/paged")
@@ -112,7 +112,18 @@ public class BoardCommentController {
     }
 
 
+    @Operation(
+            summary = "댓글 조회(정렬방식 선택)",
+            description = "댓글 조회 - 최신순/오래된순"
+    )
     @GetMapping("/list/{boardIdx}/sorted")
+    @ApiResponse(responseCode = "200", description = "댓글 조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BaseResponse.class),
+                    examples = @ExampleObject(name = "댓글 조회 성공 응답", value = BOARD_COMMENT_LIST_RESPONSE
+                    )))
+    @ApiResponse(responseCode = "400", description = "댓글 조회 실패", content = @Content(mediaType = "application/json"))
     public ResponseEntity<BaseResponse<List<BoardCommentResponseDto>>> list(
             @PathVariable Integer boardIdx, @RequestParam(defaultValue = "oldest") String sort) {
         List<BoardCommentResponseDto> result = boardCommentService.list(boardIdx, sort);
@@ -121,7 +132,7 @@ public class BoardCommentController {
 
 
     @Operation(
-            summary = "채널 게시글 댓글 삭제",
+            summary = " 댓글 삭제",
             description = "채널 게시글의 댓글 삭제하는 기능"
     )
     @DeleteMapping("/delete/{commentIdx}")
@@ -134,6 +145,7 @@ public class BoardCommentController {
     @ApiResponse(responseCode = "400", description = "댓글 삭제 실패", content = @Content(mediaType = "application/json"))
     public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);
+
 
         return ResponseEntity.ok(BaseResponse.of(null,HttpStatus.OK,"댓글 삭제 성공"));
     }
