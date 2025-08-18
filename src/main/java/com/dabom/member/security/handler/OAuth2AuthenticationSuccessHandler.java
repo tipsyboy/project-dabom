@@ -40,7 +40,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                             "window.close();" +
                             "</script>"
             );
-            // window.opener.postMessage
         }
     }
 }

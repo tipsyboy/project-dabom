@@ -19,7 +19,7 @@ public class ChannelBoardReadResponseDto {
                 .idx(entity.getIdx())
                 .title(entity.getTitle())
                 .contents(entity.getContents())
-                .createAt(entity.getCreateAt())
+                .createAt(entity.getCreatedAt().toString())
                 .commentCount(entity.getBoardCommentList().size())
                 .build();
     }
