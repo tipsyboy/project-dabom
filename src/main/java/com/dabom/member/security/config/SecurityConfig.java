@@ -75,7 +75,10 @@ public class SecurityConfig {
                                 .requestMatchers("/api/member/login").permitAll()
                                 .requestMatchers("/api/member/signup").permitAll()
                                 .requestMatchers("/api/member/exists/**").permitAll()
+
                                 .requestMatchers("api/channel/board/**").permitAll()
+
+
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
                                 .requestMatchers("/api/**").permitAll()
 
