@@ -75,7 +75,6 @@ public class BoardCommentService {
         return BoardCommentResponseDto.from(boardCommentRepository.save(comment));
     }
 
-
     public BoardCommentSliceResponseDto getPagedComments(
             Integer boardIdx, int page, int size, String sort) {
 
