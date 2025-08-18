@@ -146,6 +146,7 @@ public class BoardCommentController {
     public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);
 
+
         return ResponseEntity.ok(BaseResponse.of(null,HttpStatus.OK,"댓글 삭제 성공"));
     }
 }
