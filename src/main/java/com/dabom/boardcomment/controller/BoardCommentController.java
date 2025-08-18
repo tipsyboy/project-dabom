@@ -24,7 +24,7 @@ import static com.dabom.boardcomment.constansts.SwaggerConstants.*;
 
 @Tag(name = "채널 게시판 댓글 기능")
 @RestController
-@RequestMapping("channel/board/comment")
+@RequestMapping("/api/channel/board/comment")
 @RequiredArgsConstructor
 public class BoardCommentController {
 
@@ -114,7 +114,7 @@ public class BoardCommentController {
 
     @Operation(
             summary = "댓글 조회(정렬방식 선택)",
-            description = "댓글 조회 - 최신순/오래된순"
+            description = "/list/{boardIdx}/lastest(oldest) = 최신순(오래된순)"
     )
     @GetMapping("/list/{boardIdx}/sorted")
     @ApiResponse(responseCode = "200", description = "댓글 조회 성공",
