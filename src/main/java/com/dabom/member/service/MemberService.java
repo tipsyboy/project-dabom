@@ -35,7 +35,11 @@ public class MemberService {
         Authentication authenticate = manager.authenticate(token);
         MemberDetailsDto userDto = (MemberDetailsDto) authenticate.getPrincipal();
 
-        return JwtUtils.generateToken(userDto.getIdx(), userDto.getEmail(), userDto.getMemberRole());
+        return JwtUtils.generateLoginToken(userDto.getIdx(), userDto.getEmail(), userDto.getMemberRole());
+    }
+
+    public String logoutMember() {
+        return JwtUtils.generateLogOutToken();
     }
 
     public MemberInfoResponseDto readMemberInfo(MemberDetailsDto dto) {

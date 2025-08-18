@@ -5,7 +5,9 @@ import com.dabom.member.model.dto.*;
 import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +30,34 @@ public class MemberController {
     public ResponseEntity<BaseResponse<String>> loginMember(@RequestBody MemberLoginRequestDto dto) {
         String jwt = memberService.loginMember(dto);
         if (jwt != null) {
+            ResponseCookie accessTokenCookie = ResponseCookie.from(ACCESS_TOKEN, jwt)
+                    .httpOnly(true)
+                    .secure(false)
+//                    .sameSite("None")
+                    .path("/")
+                    .maxAge(60 * 60) // 1시간
+                    .build();
+
             return ResponseEntity.ok()
-                    .header("Set-Cookie", ACCESS_TOKEN+"=" + jwt + "; HttpOnly; Secure; Path=/;")
+                    .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                     .body(BaseResponse.of("로그인 성공", HttpStatus.OK));
         }
         return ResponseEntity.status(400).body(BaseResponse.of("로그인 실패", HttpStatus.BAD_REQUEST));
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<BaseResponse<String>> logoutMember() {
+        ResponseCookie deleteAccessToken = ResponseCookie.from(ACCESS_TOKEN, "")
+                .httpOnly(true)
+                .secure(true)
+//                .sameSite("None")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteAccessToken.toString())
+                .body(BaseResponse.of("로그아웃 성공", HttpStatus.OK));
     }
 
     @PostMapping("/exists/email")
