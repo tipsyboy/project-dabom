@@ -22,7 +22,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         MemberDetailsDto dto = (MemberDetailsDto) authentication.getPrincipal();
 
-        String jwt = JwtUtils.generateToken(dto.getIdx(), dto.getEmail(), dto.getMemberRole());
+        String jwt = JwtUtils.generateLoginToken(dto.getIdx(), dto.getEmail(), dto.getMemberRole());
 
         if (jwt != null) {
             Cookie removeCookie = new Cookie("JSESSIONID","");
