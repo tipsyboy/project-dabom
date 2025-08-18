@@ -1,10 +1,7 @@
 package com.dabom.member.controller;
 
 import com.dabom.common.BaseResponse;
-import com.dabom.member.model.dto.MemberInfoResponseDto;
-import com.dabom.member.model.dto.MemberLoginRequestDto;
-import com.dabom.member.model.dto.MemberSignupRequestDto;
-import com.dabom.member.model.dto.MemberUpdateNameRequestDto;
+import com.dabom.member.model.dto.*;
 import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.dabom.member.contants.JWTConstants.ACCESS_TOKEN;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
@@ -36,6 +33,18 @@ public class MemberController {
                     .body(BaseResponse.of("로그인 성공", HttpStatus.OK));
         }
         return ResponseEntity.status(400).body(BaseResponse.of("로그인 실패", HttpStatus.BAD_REQUEST));
+    }
+
+    @PostMapping("/exists/email")
+    public ResponseEntity<BaseResponse<MemberEmailCheckResponseDto>> checkEmail(@RequestBody MemberEmailCheckRequestDto dto) {
+        MemberEmailCheckResponseDto memberEmailCheckResponseDto = memberService.checkMemberEmail(dto.email());
+        return ResponseEntity.status(200).body(BaseResponse.of(memberEmailCheckResponseDto, HttpStatus.OK));
+    }
+
+    @PostMapping("/exists/channel")
+    public ResponseEntity<BaseResponse<MemberChannelNameCheckResponseDto>> checkChannelName(String channelName) {
+        MemberChannelNameCheckResponseDto memberChannelNameCheckResponseDto = memberService.checkMemberChannelName(channelName);
+        return ResponseEntity.status(200).body(BaseResponse.of(memberChannelNameCheckResponseDto, HttpStatus.OK));
     }
 
     @PatchMapping("/update")

@@ -1,9 +1,6 @@
 package com.dabom.member.service;
 
-import com.dabom.member.model.dto.MemberInfoResponseDto;
-import com.dabom.member.model.dto.MemberLoginRequestDto;
-import com.dabom.member.model.dto.MemberSignupRequestDto;
-import com.dabom.member.model.dto.MemberUpdateNameRequestDto;
+import com.dabom.member.model.dto.*;
 import com.dabom.member.model.entity.Member;
 import com.dabom.member.repository.MemberRepository;
 import com.dabom.member.security.dto.MemberDetailsDto;
@@ -45,6 +42,22 @@ public class MemberService {
         Member member = getMemberFromSecurity(dto);
 
         return MemberInfoResponseDto.toDto(member);
+    }
+
+    public MemberEmailCheckResponseDto checkMemberEmail(String email) {
+        Optional<Member> optionalMember = repository.findByEmail(email);
+        if(optionalMember.isEmpty()) {
+            return MemberEmailCheckResponseDto.of(false);
+        }
+        return MemberEmailCheckResponseDto.of(true);
+    }
+
+    public MemberChannelNameCheckResponseDto checkMemberChannelName(String channelName) {
+        Optional<Member> optionalMember = repository.findByName(channelName);
+        if(optionalMember.isEmpty()) {
+            return MemberChannelNameCheckResponseDto.of(false);
+        }
+        return MemberChannelNameCheckResponseDto.of(true);
     }
 
     @Transactional
