@@ -28,6 +28,11 @@ spring:
       hibernate:
         format_sql: true
 
+  ffmpeg:
+    path: ${FFMPEG_PATH}
+    hls:
+      segment-duration: ${FFMPEG_SEGMENT_DURATION}
+
 file:
   upload:
     path: ${FILE_PATH}
