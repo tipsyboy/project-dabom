@@ -80,13 +80,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/member/signup").permitAll()
                                 .requestMatchers("/api/member/exists/**").permitAll()
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
-                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
-
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                                         "/swagger-resources/**", "/webjars/**").permitAll()
-                                .requestMatchers("/channel/board/**").permitAll()
-
                                 .anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
