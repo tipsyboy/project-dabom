@@ -19,13 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.dabom.boardcomment.constansts.SwaggerConstants.BOARD_COMMENT_CREATED_REQUEST;
-import static com.dabom.boardcomment.constansts.SwaggerConstants.BOARD_COMMENT_CREATED_RESPONSE;
+import static com.dabom.boardcomment.constansts.SwaggerConstants.*;
 
 
 @Tag(name = "채널 게시판 댓글 기능")
 @RestController
-@RequestMapping("channel/board/comment")
+@RequestMapping("/api/channel/board/comment")
 @RequiredArgsConstructor
 public class BoardCommentController {
 
@@ -44,10 +43,7 @@ public class BoardCommentController {
                             examples = @ExampleObject(
                                     name = "댓글 등록 요청 예시",
                                     value = BOARD_COMMENT_CREATED_REQUEST
-                            )
-                    )
-            )
-    )
+                            ))))
     @PostMapping("/create/{boardIdx}")
     @ApiResponse(responseCode = "200", description = "댓글 등록 성공",
             content = @Content(
@@ -60,23 +56,49 @@ public class BoardCommentController {
     public ResponseEntity<BaseResponse<Integer>> create(@RequestBody BoardCommentCreateRequestDto dto,
                                                         @PathVariable Integer boardIdx) {
         Integer idx = boardCommentService.create(dto, boardIdx);
-
         return ResponseEntity.ok(BaseResponse.of(idx, HttpStatus.OK, "댓글이 성공적으로 등록되었습니다."));
     }
 
+    @Operation(
+            summary = "댓글 수정",
+            description = "채널 게시글 댓글 수정 기능",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "댓글 수정 요청 데이터",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BoardCommentCreateRequestDto.class),
+                            examples = @ExampleObject(
+                                    name = "댓글 수정 요청 예시",
+                                    value = BOARD_COMMENT_UPDATE_REQUEST
+                            ))))
     @PutMapping("/update/{boardCommentIdx}")
-    public ResponseEntity<BaseResponse<BoardCommentResponseDto>>update(
+    @ApiResponse(responseCode = "200", description = "댓글 수정 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BaseResponse.class),
+                    examples = @ExampleObject(name = "댓글 수정 성공 응답", value = BOARD_COMMENT_UPDATE_RESPONSE
+                    )))
+    @ApiResponse(responseCode = "400", description = "댓글 수정 실패", content = @Content(mediaType = "application/json"))
+
+    public ResponseEntity<BaseResponse<BoardCommentResponseDto>> update(
             @RequestBody BoardCommentCreateRequestDto dto,
             @PathVariable Integer boardCommentIdx) {
         BoardCommentResponseDto result = boardCommentService.update(boardCommentIdx, dto);
-        return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK,"댓글 수정 완료"));
+        return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "댓글 수정 완료"));
     }
 
     @Operation(
-            summary = "댓글 페이지네이션 조회",
+            summary = "댓글 무한 스크롤",
             description = "무한 스크롤을 위한 페이지네이션된 댓글 목록 조회"
     )
     @GetMapping("/list/{boardIdx}/paged")
+    @ApiResponse(responseCode = "200", description = "페이지 로딩 완료",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BaseResponse.class),
+                    examples = @ExampleObject(name = "페이지 로딩 성공", value = BOARD_COMMENT_PAGING
+                    )))
     public ResponseEntity<BaseResponse<BoardCommentSliceResponseDto>> getCommentsPaged(
             @PathVariable Integer boardIdx,
             @RequestParam(defaultValue = "0") Integer page,
@@ -89,17 +111,42 @@ public class BoardCommentController {
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "댓글 조회 성공"));
     }
 
+
+    @Operation(
+            summary = "댓글 조회(정렬방식 선택)",
+            description = "/list/{boardIdx}/lastest(oldest) = 최신순(오래된순)"
+    )
     @GetMapping("/list/{boardIdx}/sorted")
+    @ApiResponse(responseCode = "200", description = "댓글 조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BaseResponse.class),
+                    examples = @ExampleObject(name = "댓글 조회 성공 응답", value = BOARD_COMMENT_LIST_RESPONSE
+                    )))
+    @ApiResponse(responseCode = "400", description = "댓글 조회 실패", content = @Content(mediaType = "application/json"))
     public ResponseEntity<BaseResponse<List<BoardCommentResponseDto>>> list(
-            @PathVariable Integer boardIdx,@RequestParam(defaultValue = "oldest")String sort) {
+            @PathVariable Integer boardIdx, @RequestParam(defaultValue = "oldest") String sort) {
         List<BoardCommentResponseDto> result = boardCommentService.list(boardIdx, sort);
-        return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK,"댓글 조회 성공"));
+        return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "댓글 조회 성공"));
     }
 
+
+    @Operation(
+            summary = " 댓글 삭제",
+            description = "채널 게시글의 댓글 삭제하는 기능"
+    )
     @DeleteMapping("/delete/{commentIdx}")
-    public ResponseEntity<Void> delete(@PathVariable Integer commentIdx) {
+    @ApiResponse(responseCode = "200", description = "댓글 수정 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = BaseResponse.class),
+                    examples = @ExampleObject(name = "댓글 삭제 성공 응답", value = BOARD_COMMENT_DELETE_RESPONSE
+                    )))
+    @ApiResponse(responseCode = "400", description = "댓글 삭제 실패", content = @Content(mediaType = "application/json"))
+    public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer commentIdx) {
         boardCommentService.delete(commentIdx);
 
-        return ResponseEntity.ok(null);
+
+        return ResponseEntity.ok(BaseResponse.of(null,HttpStatus.OK,"댓글 삭제 성공"));
     }
 }

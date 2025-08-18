@@ -79,6 +79,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/member/login").permitAll()
                                 .requestMatchers("/api/member/signup").permitAll()
                                 .requestMatchers("/api/member/exists/**").permitAll()
+                                .requestMatchers("api/channel/board/**").permitAll()
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
                                 .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",

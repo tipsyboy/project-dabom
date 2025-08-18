@@ -1,23 +1,22 @@
 package com.dabom.image.controller;
 
 import com.dabom.common.BaseResponse;
+import com.dabom.image.model.dto.ImageUploadResponseDto;
 import com.dabom.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@RestController("/image")
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 public class ImageController {
 
     private final ImageService imageService;
-
-    @Value("${file.upload.path}")
-    private String uploadPath;
 
 
     @GetMapping("/find/{imgidx}")
@@ -33,4 +32,15 @@ public class ImageController {
 
         return ResponseEntity.ok(null);
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ImageUploadResponseDto> register(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("directory") String directory) throws IOException {
+
+        ImageUploadResponseDto response = imageService.uploadSingleImage(file, directory);
+        return ResponseEntity.ok(response);
+    }
+
+
 }

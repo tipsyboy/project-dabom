@@ -1,25 +1,27 @@
-package com.dabom.boardcomment.constansts;
-
-import org.springframework.format.number.PercentStyleFormatter;
+package com.dabom.videocomment.constansts;
 
 public final class SwaggerConstants {
-    public static final String BOARD_COMMENT_CREATED_REQUEST = """
+    // 영상 댓글 요청
+    public static final String VIDEO_COMMENT_CREATED_REQUEST = """
             {
-                 "content": "좋은 게시글이네요!"
+                 "content": "정말 유익한영상입니다!"
             }
             """;
-    public static final String BOARD_COMMENT_CREATED_RESPONSE = """
+
+    // 영상 댓글 응답
+    public static final String VIDEO_COMMENT_CREATED_RESPONSE = """
             {
                 "data": 1,
                 "code": 200,
                 "message": "댓글이 성공적으로 등록되었습니다."
             }    
             """;
-    public static final String BOARD_COMMENT_DELETED = """
+    public static final String VIDEO_COMMENT_DELETED = """
             
             """;
 
-    public static final String BOARD_COMMENT_PAGING = """
+    // 영상 댓글 페이징(무한 스크롤)
+    public static final String VIDEO_COMMENT_PAGING = """
                 {
                     "data": {
                         "content": [
@@ -46,13 +48,15 @@ public final class SwaggerConstants {
                 }
             """;
 
-    public static final String BOARD_COMMENT_UPDATE_REQUEST = """
+    // 영상 댓글 수정 요청
+    public static final String VIDEO_COMMENT_UPDATE_REQUEST = """
                 {
                     "comment": "수정할 댓글 내용"
                 }
             """;
 
-    public static final String BOARD_COMMENT_UPDATE_RESPONSE = """
+    // 영상댓글 수정 응답
+    public static final String VIDEO_COMMENT_UPDATE_RESPONSE = """
             {
                 "data": {
                     "idx": 25,
@@ -66,14 +70,17 @@ public final class SwaggerConstants {
             }  
             """;
 
-    public static final String BOARD_COMMENT_DELETE_RESPONSE = """
+    //영상 댓글 삭제 응답
+    public static final String VIDEO_COMMENT_DELETE_RESPONSE = """
             {
                 "data": null,
                 "code": 200,
                 "message": "댓글 삭제 성공"
             }
             """;
-    public static final String BOARD_COMMENT_LIST_RESPONSE = """
+
+    // 영상댓글 리스트 기능(응답)
+    public static final String VIDEO_COMMENT_LIST_RESPONSE = """
             {
                 "data": [
                     {
