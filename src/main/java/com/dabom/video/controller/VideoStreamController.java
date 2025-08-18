@@ -15,14 +15,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Slf4j
-@RestController
+@RestController("/api/videos")
 @RequiredArgsConstructor
 public class VideoStreamController {
 
     private final VideoService videoServiceV4;
     private final VideoSegmentService videoSegmentService;
 
-    @GetMapping("/videos/{videoId}/stream")
+    @GetMapping("/{videoId}/stream")
     public ResponseEntity<Resource> stream(@PathVariable Integer videoId) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "application/vnd.apple.mpegurl")
@@ -30,7 +30,7 @@ public class VideoStreamController {
                 .body(videoServiceV4.stream(videoId));
     }
 
-    @GetMapping("/videos/{videoId}/{segmentName}")
+    @GetMapping("/{videoId}/{segmentName}")
     public ResponseEntity<?> getSegment(@PathVariable Integer videoId,
                                         @PathVariable String segmentName) throws IOException {
 
