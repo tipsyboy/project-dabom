@@ -36,10 +36,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             response.setContentType("text/html");
             response.getWriter().write(
                     "<script>" +
-                            "window.opener.location.href = 'http://localhost:5174';" + // 메인 페이지 URL
+                            "window.opener.postMessage('true', '*');" +
                             "window.close();" +
                             "</script>"
             );
+            // window.opener.postMessage
         }
     }
 }

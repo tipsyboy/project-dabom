@@ -6,6 +6,7 @@ import com.dabom.member.security.service.Oauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,7 +34,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5174"
+                "http://localhost:5174",
+                "http://192.168.52.1:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -47,7 +49,6 @@ public class SecurityConfig {
     public AuthenticationManager getAuthenticationManager() throws Exception {
         return configuration.getAuthenticationManager();
     }
-
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -71,8 +72,9 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/member/login").permitAll()
-                                .requestMatchers("/member/signup").permitAll()
+                                .requestMatchers("/api/member/login").permitAll()
+                                .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/member/exists/**").permitAll()
                                 .requestMatchers("/oauth2/authorization/**").permitAll()
                                 .requestMatchers("/api/**").permitAll()
 

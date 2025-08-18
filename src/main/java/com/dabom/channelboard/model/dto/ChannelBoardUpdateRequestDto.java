@@ -4,11 +4,9 @@ package com.dabom.channelboard.model.dto;
 import com.dabom.channelboard.model.entity.ChannelBoard;
 
 public class ChannelBoardUpdateRequestDto {
-
     private Integer idx;
     private String title;
     private String contents;
-    private String createAt;
     private Boolean isDeleted;
 
     public ChannelBoard toEntity() {
@@ -16,7 +14,6 @@ public class ChannelBoardUpdateRequestDto {
                 .idx(idx)
                 .title(title)
                 .contents(contents)
-                .createAt(createAt)
                 .build();
         return entity;
     }

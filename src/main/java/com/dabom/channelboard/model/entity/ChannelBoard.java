@@ -1,6 +1,7 @@
 package com.dabom.channelboard.model.entity;
 
 import com.dabom.boardcomment.model.entity.BoardComment;
+import com.dabom.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.dabom.member.model.entity.Member;
@@ -10,24 +11,22 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChannelBoard {
+public class ChannelBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
     private String title;
     private String contents;
-    private String createAt;
     @Setter
     private Boolean isDeleted;
 
 
     @Builder
-    public ChannelBoard(Integer idx, String title, String contents, String createAt, String updateAt, Boolean isDeleted) {
+    public ChannelBoard(Integer idx, String title, String contents) {
         this.idx = idx;
         this.title = title;
         this.contents = contents;
-        this.createAt = createAt;
         this.isDeleted = false;
     }
 
