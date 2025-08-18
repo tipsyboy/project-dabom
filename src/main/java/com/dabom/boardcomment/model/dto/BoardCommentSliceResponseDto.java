@@ -1,4 +1,4 @@
-package com.dabom.common;
+package com.dabom.boardcomment.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SliceBaseResponse<T> {
-    private List<T> content;
+public class BoardCommentSliceResponseDto {
+    private List<BoardCommentResponseDto> content;
     private boolean hasNext;
+    private long totalCount;
 }
+

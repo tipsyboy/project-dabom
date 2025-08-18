@@ -1,26 +1,36 @@
 package com.dabom.image.controller;
 
+import com.dabom.common.BaseResponse;
+import com.dabom.image.service.ImageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("/image")
+@RequiredArgsConstructor
 public class ImageController {
 
-    private String getContentType(String filename) {
-        String extension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-        switch (extension) {
-            case "jpg":
-            case "jpeg":
-                return "image/jpeg";
-            case "png":
-                return "image/png";
-            case "gif":
-                return "image/gif";
-            case "webp":
-                return "image/webp";
-            default:
-                return "application/octet-stream";
-        }
+    private final ImageService imageService;
+
+    @Value("${file.upload.path}")
+    private String uploadPath;
+
+
+    @GetMapping("/find/{imgidx}")
+    public ResponseEntity<BaseResponse<String>> getImage(@RequestParam Integer imgidx) {
+        String result = imageService.find(imgidx);
+
+        return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }
 
+    @GetMapping("/delete/{imgidx}")
+    public ResponseEntity<Void> deleteImage(@RequestParam Integer imgidx) {
+        imageService.deleteImage(imgidx);
 
+        return ResponseEntity.ok(null);
+    }
 }
