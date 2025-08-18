@@ -21,6 +21,8 @@ public class Member extends BaseEntity {
     private String email;
     private String name;
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_role")
     private MemberRole memberRole;
 
     // 내가 구독한 사람

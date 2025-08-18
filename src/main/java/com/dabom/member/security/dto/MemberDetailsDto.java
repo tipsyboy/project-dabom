@@ -69,7 +69,7 @@ public class MemberDetailsDto implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(memberRole.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + memberRole.name()));
     }
 
     @Override
