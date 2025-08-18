@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -33,7 +33,7 @@ public class ImageController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/upload")
     public ResponseEntity<ImageUploadResponseDto> register(
             @RequestParam("file") MultipartFile file,
             @RequestParam("directory") String directory) throws IOException {
