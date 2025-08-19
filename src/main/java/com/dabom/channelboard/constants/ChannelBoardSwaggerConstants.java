@@ -53,7 +53,6 @@ public final class ChannelBoardSwaggerConstants {
                     "commentCount": 5
                 },
                 "code": 200,
-                "message": "게시글 검색 완료"
             }
             """;
 
