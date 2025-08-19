@@ -18,7 +18,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/videos")
 @RequiredArgsConstructor
-public class VideoController {
+public class VideoUploadController {
 
     private final VideoService videoServiceV4;
     private final VideoSegmentService videoSegmentService;
