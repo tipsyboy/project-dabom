@@ -1,4 +1,4 @@
-package com.dabom.video.service.utils;
+package com.dabom.video.utils;
 
 
 import com.dabom.video.model.EncodingStatus;

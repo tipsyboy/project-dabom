@@ -2,8 +2,8 @@ package com.dabom.video.service;
 
 
 import com.dabom.video.model.EncodingStatus;
-import com.dabom.video.service.utils.FfmpegEncoder;
-import com.dabom.video.service.utils.VideoStatusManager;
+import com.dabom.video.utils.FfmpegEncoder;
+import com.dabom.video.utils.VideoStatusManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

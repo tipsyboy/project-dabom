@@ -28,6 +28,12 @@ spring:
       hibernate:
         format_sql: true
 
+  servlet:
+    multipart:
+      max-file-size: 100MB # 최대 파일 사이즈
+      max-request-size: 100MB # 한 번 요청의 최대 사이즈
+
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
