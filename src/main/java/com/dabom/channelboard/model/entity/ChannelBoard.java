@@ -15,7 +15,6 @@ public class ChannelBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
-
     private String title;
     private String contents;
     @Setter

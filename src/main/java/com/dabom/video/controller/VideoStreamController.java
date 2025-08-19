@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.nio.file.Files;
 
+
 @Slf4j
 @RestController("/api/videos")
 @RequiredArgsConstructor
 public class VideoStreamController {
 
-    private final VideoService videoServiceV4;
+    private final VideoService videoService;
     private final VideoSegmentService videoSegmentService;
 
     @GetMapping("/{videoId}/stream")
@@ -27,7 +28,7 @@ public class VideoStreamController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, "application/vnd.apple.mpegurl")
                 .header(HttpHeaders.CACHE_CONTROL, "no-cache")
-                .body(videoServiceV4.stream(videoId));
+                .body(videoService.stream(videoId));
     }
 
     @GetMapping("/{videoId}/{segmentName}")

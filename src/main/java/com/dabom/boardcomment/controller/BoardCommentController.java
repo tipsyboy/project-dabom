@@ -1,7 +1,6 @@
 package com.dabom.boardcomment.controller;
 
 import com.dabom.boardcomment.model.dto.BoardCommentResponseDto;
-import com.dabom.boardcomment.model.dto.BoardCommentSliceResponseDto;
 import com.dabom.common.BaseResponse;
 import com.dabom.boardcomment.model.dto.BoardCommentCreateRequestDto;
 import com.dabom.boardcomment.service.BoardCommentService;
@@ -99,13 +98,13 @@ public class BoardCommentController {
                     schema = @Schema(implementation = BaseResponse.class),
                     examples = @ExampleObject(name = "페이지 로딩 성공", value = BOARD_COMMENT_PAGING
                     )))
-    public ResponseEntity<BaseResponse<BoardCommentSliceResponseDto>> getCommentsPaged(
+    public ResponseEntity<BaseResponse<SliceBaseResponse<BoardCommentResponseDto>>> getCommentsPaged(
             @PathVariable Integer boardIdx,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "oldest") String sort) {
 
-        BoardCommentSliceResponseDto result =
+        SliceBaseResponse<BoardCommentResponseDto> result =
                 boardCommentService.getPagedComments(boardIdx, page, size, sort);
 
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "댓글 조회 성공"));

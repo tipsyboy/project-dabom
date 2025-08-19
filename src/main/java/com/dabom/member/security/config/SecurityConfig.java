@@ -37,7 +37,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5174"
+                "http://localhost:5174",
+                "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setExposedHeaders(List.of("*"));
@@ -88,6 +89,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 }

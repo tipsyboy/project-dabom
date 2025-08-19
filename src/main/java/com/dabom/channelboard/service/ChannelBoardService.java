@@ -8,9 +8,9 @@ import com.dabom.channelboard.repositroy.ChannelBoardRepository;
 import com.dabom.common.SliceBaseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,21 +26,39 @@ public class ChannelBoardService {
         return result.getIdx();
     }
 
-    public SliceBaseResponse<ChannelBoardReadResponseDto> list(Integer page, Integer size) {
-        Page<ChannelBoard> result = channelBoardRepository.findAll(PageRequest.of(page,size));
+    public SliceBaseResponse<ChannelBoardReadResponseDto> list(
+            Integer page, Integer size, String sort) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<ChannelBoard> channelBoardSlice;
 
-        List<ChannelBoardReadResponseDto> content = result.getContent()
-                .stream().map(ChannelBoardReadResponseDto::from).toList();
+        switch (sort) {
+            case "latest":
+                channelBoardSlice = channelBoardRepository.findAllByIsDeletedFalseOrderByIdxDesc(pageable);
+                break;
+            case "oldest":
+            default:
+                channelBoardSlice = channelBoardRepository.findAllByIsDeletedFalseOrderByIdxAsc(pageable);
+                break;
+        }
 
-        boolean hasNext = result.hasNext();
+        List<ChannelBoardReadResponseDto> content = channelBoardSlice.getContent()
+                .stream()
+                .map(board -> {
+                    Long commentCount = channelBoardRepository.countCommentsByBoardIdx(board.getIdx());
+                    return ChannelBoardReadResponseDto.fromWithCommentCount(board, commentCount);
+                })
+                .toList();
 
-        return new SliceBaseResponse<>(content, hasNext);
+        Long totalCount = channelBoardRepository.countByIsDeletedFalse();
+        return new SliceBaseResponse<ChannelBoardReadResponseDto>(content, channelBoardSlice.hasNext(), totalCount);
     }
 
     public ChannelBoardReadResponseDto read(Integer idx) {
         Optional<ChannelBoard> result = channelBoardRepository.findById(idx);
         if (result.isPresent()) {
-            return ChannelBoardReadResponseDto.from(result.get());
+            ChannelBoard board = result.get();
+            Long commentCount = channelBoardRepository.countCommentsByBoardIdx(board.getIdx());
+            return ChannelBoardReadResponseDto.fromWithCommentCount(board, commentCount);
         } else {
             throw new EntityNotFoundException("해당 게시글이 존재하지 않습니다: " + idx);
         }
@@ -62,6 +80,5 @@ public class ChannelBoardService {
         } else {
             throw new EntityNotFoundException("해당 게시글이 존재하지 않습니다: " + idx);
         }
-
     }
 }

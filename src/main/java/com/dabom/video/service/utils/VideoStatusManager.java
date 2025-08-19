@@ -1,17 +1,18 @@
-package com.dabom.video.service;
+package com.dabom.video.service.utils;
+
 
 import com.dabom.video.model.EncodingStatus;
 import com.dabom.video.model.Video;
 import com.dabom.video.repository.VideoRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class VideoUpdateService {
+public class VideoStatusManager {
 
     private final VideoRepository videoRepository;
 
