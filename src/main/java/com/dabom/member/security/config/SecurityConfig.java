@@ -2,11 +2,9 @@ package com.dabom.member.security.config;
 
 import com.dabom.member.model.entity.MemberRole;
 import com.dabom.member.security.filter.JwtAuthFilter;
-import com.dabom.member.security.handler.CustomAccessDeniedHandler;
 import com.dabom.member.security.handler.OAuth2AuthenticationSuccessHandler;
 import com.dabom.member.security.repository.StatelessAuthorizationRequestRepository;
 import com.dabom.member.security.service.Oauth2UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +27,16 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final ObjectMapper objectMapper;
+
+    private static final String[] AUTH_WHITE_LIST = {
+            "/api/member/login",
+            "/api/member/signup",
+            "/api/member/exists/**",
+            "/api/channel/board/**",
+            "/oauth2/authorization/**",
+    };
+    private static final String[] SWAGGER_LIST = {"/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**"};
+
     private final AuthenticationConfiguration configuration;
     private final Oauth2UserService oauth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -69,34 +76,28 @@ public class SecurityConfig {
                     config.successHandler(oAuth2AuthenticationSuccessHandler);
                 }
         );
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors ->
-                        cors.configurationSource(corsConfigurationSource()))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        (auth) -> auth
 
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/member/exists/**").permitAll()
-                                .requestMatchers("/api/channel/board/**").permitAll()
-                                .requestMatchers("/oauth2/authorization/**").permitAll()
-                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
-                                .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
-                                .anyRequest()
-                                .permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(SWAGGER_LIST).permitAll()
+                        .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
+                        .anyRequest().permitAll()
+                )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(new CustomAccessDeniedHandler(objectMapper))
-                )
                 .build();
     }
 }
