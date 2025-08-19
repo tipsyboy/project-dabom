@@ -5,7 +5,7 @@ import com.dabom.channelboard.model.entity.ChannelBoard;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-@Getter
+
 @Schema(description = "채널 게시글 등록 요청 DTO")
 public record ChannelBoardRegisterRequestDto(
 
