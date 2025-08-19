@@ -73,7 +73,7 @@ public class MemberController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<BaseResponse<String>> updateNameMember(@RequestBody MemberUpdateNameRequestDto dto,
+    public ResponseEntity<BaseResponse<String>> updateNameMember(@RequestBody MemberUpdateChannelRequestDto dto,
                                            @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         memberService.updateMemberName(memberDetailsDto, dto);
         return ResponseEntity.ok(BaseResponse.of("회원 이름 변경 성공", HttpStatus.OK));
@@ -88,6 +88,6 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<BaseResponse<String>> deleteMember(@AuthenticationPrincipal MemberDetailsDto dto) {
         memberService.deleteMember(dto);
-        return ResponseEntity.ok(BaseResponse.of("삭제 완료 되었습니다.", HttpStatus.OK));
+        return ResponseEntity.ok(BaseResponse.of("삭제 완료 되었습니다. 실제 데이터 삭제까지는 하루정도 소요됩니다.", HttpStatus.OK));
     }
 }
