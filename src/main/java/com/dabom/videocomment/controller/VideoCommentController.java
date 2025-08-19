@@ -1,8 +1,9 @@
 package com.dabom.videocomment.controller;
 
-import com.dabom.boardcomment.model.dto.BoardCommentCreateRequestDto;
 import com.dabom.common.BaseResponse;
+import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.videocomment.model.dto.VideoCommentRegisterDto;
+import com.dabom.videocomment.model.dto.VideoCommentResponseDto;
 import com.dabom.videocomment.model.dto.VideoCommentUpdateDto;
 import com.dabom.videocomment.model.entity.VideoComment;
 import com.dabom.videocomment.service.VideoCommentService;
@@ -13,12 +14,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.dabom.boardcomment.constansts.SwaggerConstants.*;
 import static com.dabom.videocomment.constansts.SwaggerConstants.*;
 
 @Tag(name = "영상 하단 게시판 기능")
@@ -26,35 +28,42 @@ import static com.dabom.videocomment.constansts.SwaggerConstants.*;
 @RestController
 @RequiredArgsConstructor
 public class VideoCommentController {
+
     private final VideoCommentService videoCommentService;
 
     @Operation(
-            summary = "영상 하단 댓글 등록",
-            description = "영상에 관한 댓글을 등록하는 기능",
+            summary = "댓글 등록",
+            description = "특정 영상에 댓글을 등록한다",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "댓글 등록 요청 데이터",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BoardCommentCreateRequestDto.class),
+                            schema = @Schema(implementation = VideoCommentRegisterDto.class),
                             examples = @ExampleObject(
                                     name = "댓글 등록 요청 예시",
                                     value = VIDEO_COMMENT_CREATED_REQUEST
-                            )))
-    )
-    @PostMapping("/register")
+                            ))))
     @ApiResponse(responseCode = "200", description = "댓글 등록 성공",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(name = "댓글 등록 성공 응답", value = VIDEO_COMMENT_CREATED_RESPONSE
+                    examples = @ExampleObject(
+                            name = "댓글 등록 성공 응답",
+                            value = VIDEO_COMMENT_CREATED_RESPONSE
                     )))
     @ApiResponse(responseCode = "400", description = "댓글 등록 실패", content = @Content(mediaType = "application/json"))
+    @PostMapping("/{videoIdx}/members//comments")
+    public ResponseEntity<BaseResponse<Integer>> register(
+            @RequestBody VideoCommentRegisterDto dto,
+            @PathVariable Integer videoIdx,
+            @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
 
-    public ResponseEntity register(@RequestBody VideoCommentRegisterDto dto) {
-        videoCommentService.register(dto);
+        Integer idx = videoCommentService.register(dto, videoIdx, memberDetailsDto.getIdx());
 
-        return ResponseEntity.status(200).body("success");
+        return ResponseEntity.ok(
+                BaseResponse.of(idx, HttpStatus.OK, "댓글이 성공적으로 등록되었습니다.")
+        );
     }
 
     @Operation(
@@ -65,24 +74,28 @@ public class VideoCommentController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(name = "댓글 조회 성공 응답", value = VIDEO_COMMENT_LIST_RESPONSE
+                    examples = @ExampleObject(
+                            name = "댓글 조회 성공 응답",
+                            value = VIDEO_COMMENT_LIST_RESPONSE
                     )))
     @ApiResponse(responseCode = "400", description = "댓글 조회 실패", content = @Content(mediaType = "application/json"))
-    @GetMapping("/list")
-    public ResponseEntity list() {
-        List<VideoComment> response = videoCommentService.list();
-        return ResponseEntity.status(200).body(response);
+    @GetMapping("/{videoIdx}/comments")
+    public ResponseEntity<BaseResponse<List<VideoCommentResponseDto>>> list(@PathVariable Integer videoIdx) {
+        List<VideoCommentResponseDto> response = videoCommentService.list(videoIdx);
+        return ResponseEntity.ok(
+                BaseResponse.of(response, HttpStatus.OK, "댓글 목록 조회 성공")
+        );
     }
 
     @Operation(
             summary = "댓글 수정",
-            description = "채널 게시글 댓글 수정 기능",
+            description = "특정 영상 댓글 수정",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "댓글 수정 요청 데이터",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BoardCommentCreateRequestDto.class),
+                            schema = @Schema(implementation = VideoCommentUpdateDto.class),
                             examples = @ExampleObject(
                                     name = "댓글 수정 요청 예시",
                                     value = VIDEO_COMMENT_UPDATE_REQUEST
@@ -91,14 +104,21 @@ public class VideoCommentController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = BaseResponse.class),
-                    examples = @ExampleObject(name = "댓글 수정 성공 응답", value = VIDEO_COMMENT_UPDATE_RESPONSE
+                    examples = @ExampleObject(
+                            name = "댓글 수정 성공 응답",
+                            value = VIDEO_COMMENT_UPDATE_RESPONSE
                     )))
     @ApiResponse(responseCode = "400", description = "댓글 수정 실패", content = @Content(mediaType = "application/json"))
-
-    @PatchMapping("/update")
-    public ResponseEntity update(
+    @PatchMapping("/{videoIdx}/comments/{commentIdx}")
+    public ResponseEntity<BaseResponse<Integer>> update(
+            @PathVariable Integer videoIdx,
+            @PathVariable Integer commentIdx,
             @RequestBody VideoCommentUpdateDto dto) {
-        videoCommentService.update(dto);
-        return ResponseEntity.status(200).body("update success");
+
+        Integer idx = videoCommentService.update(commentIdx, dto);
+
+        return ResponseEntity.ok(
+                BaseResponse.of(idx, HttpStatus.OK, "댓글이 성공적으로 수정되었습니다.")
+        );
     }
 }

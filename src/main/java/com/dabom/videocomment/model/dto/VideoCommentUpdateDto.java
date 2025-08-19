@@ -11,10 +11,7 @@ public class VideoCommentUpdateDto {
     private String content;
 
     public VideoComment toEntity(VideoComment entity) {
-        return VideoComment.builder()
-                .idx(entity.getIdx())
-                .content(this.content)
-                .isDeleted(entity.getIsDeleted())
-                .build();
+        entity.updateContent(this.content); // 기존 엔티티 수정
+        return entity;
     }
 }
