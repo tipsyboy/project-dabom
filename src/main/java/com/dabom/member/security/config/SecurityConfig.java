@@ -87,8 +87,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                                         "/swagger-resources/**", "/webjars/**").permitAll()
-                                .anyRequest()
-                                .authenticated())
+                                .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();
