@@ -1,7 +1,9 @@
 package com.dabom.member.security.config;
 
+import com.dabom.member.model.entity.MemberRole;
 import com.dabom.member.security.filter.JwtAuthFilter;
 import com.dabom.member.security.handler.OAuth2AuthenticationSuccessHandler;
+import com.dabom.member.security.repository.StatelessAuthorizationRequestRepository;
 import com.dabom.member.security.service.Oauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -59,6 +61,8 @@ public class SecurityConfig {
                     config.userInfoEndpoint(
                             endpoint -> endpoint.userService(oauth2UserService)
                     );
+                    config.authorizationEndpoint(auth ->
+                            auth.authorizationRequestRepository(new StatelessAuthorizationRequestRepository()));
                     config.successHandler(oAuth2AuthenticationSuccessHandler);
                 }
         );
@@ -73,22 +77,20 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
-//                                .requestMatchers("/api/member/login").permitAll()
-//                                .requestMatchers("/api/member/signup").permitAll()
-//                                .requestMatchers("/api/member/exists/**").permitAll()
-//
-//                                .requestMatchers("api/channel/board/**").permitAll()
-//
-//
-//                                .requestMatchers("/oauth2/authorization/**").permitAll()
-//                                .requestMatchers("/api/**").permitAll()
-//
-//                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
-//                                        "/swagger-resources/**", "/webjars/**").permitAll()
 
-                                .requestMatchers("/**").permitAll()
-                                .anyRequest().authenticated())
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                                .requestMatchers("/api/member/login").permitAll()
+                                .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/member/exists/**").permitAll()
+                                .requestMatchers("api/channel/board/**").permitAll()
+                                .requestMatchers("/oauth2/authorization/**").permitAll()
+                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
+                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/swagger-resources/**", "/webjars/**").permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 }

@@ -36,8 +36,11 @@ public class ChannelBoardReadResponseDto {
                 .idx(entity.getIdx())
                 .title(entity.getTitle())
                 .contents(entity.getContents())
+
                 .createdAt(entity.getCreatedAt().format(formatter))
                 .commentCount(commentCount.intValue())
+
+                
                 .build();
     }
 }
