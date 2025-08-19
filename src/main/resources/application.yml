@@ -28,6 +28,12 @@ spring:
       hibernate:
         format_sql: true
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
 file:
   upload:
     path: ${FILE_PATH}
