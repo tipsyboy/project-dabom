@@ -65,9 +65,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateNameRequestDto dto) {
+    public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateChannelRequestDto dto) {
         Member member = getMemberFromSecurity(memberDetailsDto);
-        member.updateName(dto.name());
+        if(dto.name() != null) {
+            member.updateName(dto.name());
+        } if(dto.content() != null) {
+            member.updateContent(dto.content());
+        }
         repository.save(member);
     }
 

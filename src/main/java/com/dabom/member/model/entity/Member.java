@@ -21,6 +21,7 @@ public class Member extends BaseEntity {
     private String email;
     private String name;
     private String password;
+    private String content;
     @Enumerated(EnumType.STRING)
     @Column(name = "member_role")
     private MemberRole memberRole;
@@ -44,6 +45,7 @@ public class Member extends BaseEntity {
     public Member(String email, String name, String password, String memberRole) {
         this.email = email;
         this.name = name;
+        this.content = null;
         this.password = password;
         this.memberRole = MemberRole.valueOf(memberRole);
         this.sumScore = 0L;
@@ -53,6 +55,10 @@ public class Member extends BaseEntity {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 
     public void voidScore(Long score) {
