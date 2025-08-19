@@ -1,45 +1,65 @@
 package com.dabom.videocomment.service;
 
+import com.dabom.member.model.entity.Member;
+import com.dabom.member.repository.MemberRepository;
+import com.dabom.video.model.Video;
+import com.dabom.video.repository.VideoRepository;
 import com.dabom.videocomment.model.dto.VideoCommentRegisterDto;
+import com.dabom.videocomment.model.dto.VideoCommentResponseDto;
 import com.dabom.videocomment.model.dto.VideoCommentUpdateDto;
 import com.dabom.videocomment.model.entity.VideoComment;
 import com.dabom.videocomment.repository.VideoCommentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class VideoCommentService {
+
     private final VideoCommentRepository videoCommentRepository;
+    private final VideoRepository videoRepository;
+    private final MemberRepository memberRepository;
 
-    public void register(VideoCommentRegisterDto dto){
-        VideoComment videoComment = videoCommentRepository.save(dto.toEntity());
+    @Transactional
+    public Integer register(VideoCommentRegisterDto dto, Integer videoIdx, Integer memberIdx) {
+        Video video = videoRepository.findById(videoIdx)
+                .orElseThrow(() -> new EntityNotFoundException("영상을 찾을 수 없습니다: " + videoIdx));
+
+        Member member = memberRepository.findById(memberIdx)
+                .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다: " + memberIdx));
+
+        VideoComment videoComment = dto.toEntity(video, member);
+        return videoCommentRepository.save(videoComment).getIdx();
     }
 
-    public void deleted(Integer idx){
-        Optional<VideoComment> result = videoCommentRepository.findById(idx);
-        if(result.isPresent()){
-            VideoComment videoComment = result.get();
-            videoComment.commentDeleted();
-            videoCommentRepository.save(videoComment);
-        }
-        else throw new RuntimeException();
+    @Transactional
+    public void deleted(Integer idx) {
+        VideoComment videoComment = videoCommentRepository.findById(idx)
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + idx));
+        videoComment.delete(); // 메서드 이름 수정
+        videoCommentRepository.save(videoComment);
     }
 
-    public List<VideoComment> list() {
-        List<VideoComment> result = videoCommentRepository.findAll();
-
-        return result.stream().map(VideoComment::from).toList();
+    public List<VideoCommentResponseDto> list(Integer videoIdx) {
+        List<VideoComment> result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalse(videoIdx);
+        return result.stream()
+                .map(VideoCommentResponseDto::from)
+                .toList();
     }
 
-    public void update(VideoCommentUpdateDto dto){
-        VideoComment entity = videoCommentRepository.findById(dto.getIdx())
-                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다. id: " + dto.getIdx()));
-        VideoComment updatedEntity = dto.toEntity(entity);
-        videoCommentRepository.save(updatedEntity);
+    @Transactional
+    public Integer update(Integer commentIdx, VideoCommentUpdateDto dto) {
+        VideoComment entity = videoCommentRepository.findById(commentIdx)
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + commentIdx));
+
+        dto.toEntity(entity); // 기존 엔티티 수정
+        videoCommentRepository.save(entity);
+
+        return entity.getIdx();
     }
 }
