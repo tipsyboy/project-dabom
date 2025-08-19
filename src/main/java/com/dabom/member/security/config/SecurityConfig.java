@@ -37,7 +37,8 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5174",
-                "http://192.168.52.1:5173"
+                "http://192.168.52.1:5173",
+                "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -76,6 +77,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
+
+
                                 .requestMatchers("/api/member/login").permitAll()
                                 .requestMatchers("/api/member/signup").permitAll()
                                 .requestMatchers("/api/member/exists/**").permitAll()
@@ -87,6 +90,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 }

@@ -2,7 +2,6 @@ package com.dabom.boardcomment.service;
 
 import com.dabom.boardcomment.model.dto.BoardCommentCreateRequestDto;
 import com.dabom.boardcomment.model.dto.BoardCommentResponseDto;
-import com.dabom.boardcomment.model.dto.BoardCommentSliceResponseDto;
 import com.dabom.boardcomment.model.entity.BoardComment;
 import com.dabom.boardcomment.repository.BoardCommentRepository;
 import com.dabom.channelboard.model.entity.ChannelBoard;
@@ -75,8 +74,8 @@ public class BoardCommentService {
         return BoardCommentResponseDto.from(boardCommentRepository.save(comment));
     }
 
-    public BoardCommentSliceResponseDto getPagedComments(
-            Integer boardIdx, int page, int size, String sort) {
+    public SliceBaseResponse<BoardCommentResponseDto> getPagedComments(
+            Integer boardIdx, Integer page, Integer size, String sort) {
 
         Pageable pageable = PageRequest.of(page, size);
         Slice<BoardComment> commentSlice;
@@ -98,6 +97,6 @@ public class BoardCommentService {
                 .map(BoardCommentResponseDto::from)
                 .toList();
         long totalCount = boardCommentRepository.countByChannelBoard_IdxAndIsDeletedFalse(boardIdx);
-        return new BoardCommentSliceResponseDto(content, commentSlice.hasNext(), totalCount);
+        return new SliceBaseResponse<BoardCommentResponseDto>(content, commentSlice.hasNext(), totalCount);
     }
 }
