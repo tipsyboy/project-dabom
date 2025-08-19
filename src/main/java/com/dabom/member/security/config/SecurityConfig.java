@@ -2,13 +2,14 @@ package com.dabom.member.security.config;
 
 import com.dabom.member.model.entity.MemberRole;
 import com.dabom.member.security.filter.JwtAuthFilter;
+import com.dabom.member.security.handler.CustomAccessDeniedHandler;
 import com.dabom.member.security.handler.OAuth2AuthenticationSuccessHandler;
 import com.dabom.member.security.repository.StatelessAuthorizationRequestRepository;
 import com.dabom.member.security.service.Oauth2UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,6 +29,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final ObjectMapper objectMapper;
     private final AuthenticationConfiguration configuration;
     private final Oauth2UserService oauth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -89,7 +91,9 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(new CustomAccessDeniedHandler(objectMapper))
+                )
                 .build();
     }
 }

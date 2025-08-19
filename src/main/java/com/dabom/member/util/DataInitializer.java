@@ -15,7 +15,10 @@ public class DataInitializer {
     public void initData() {
         MemberSignupRequestDto dto1 = new MemberSignupRequestDto("DabomTotalManager@dabom.com", "DabomTopManager", "Dabom!234", "MANAGER");
         MemberSignupRequestDto dto2 = new MemberSignupRequestDto("DabomSubManager@dabom.com", "DabomSubManager", "Dabom1@34", "MANAGER");
-        memberService.signUpMember(dto1);
-        memberService.signUpMember(dto2);
+        if(!memberService.checkMemberEmail("DabomTotalManager@dabom.com").isDuplicate()) {
+            memberService.signUpMember(dto1);
+        } if(!memberService.checkMemberEmail("DabomSubManager@dabom.com").isDuplicate()) {
+            memberService.signUpMember(dto2);
+        }
     }
 }
