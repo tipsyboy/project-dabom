@@ -1,8 +1,8 @@
 -- Member 테이블 데이터 삽입 (중복 방지)
 INSERT
-IGNORE INTO member (email, name, password, member_role, created_at, updated_at) VALUES
-('test@test.com', 'UserOne', 'qwer1234!', 'USER', NOW(), NOW()),
-('user2@dabom.com', 'UserTwo', 'user2!234', 'USER', NOW(), NOW());
+IGNORE INTO member (email, name, password,content, member_role, created_at, updated_at) VALUES
+('test@test.com', 'UserOne', 'qwer1234!',null, 'USER', NOW(), NOW()),
+('user2@dabom.com', 'UserTwo', 'user2!234',null, 'USER', NOW(), NOW());
 -- ChannelBoard 테이블 데이터 삽입 (20개, 회원별 2~3개)
 INSERT IGNORE INTO channel_board (title, contents, member_idx, is_deleted, created_at, updated_at) VALUES
 ('다봄 채널 첫번째 공지사항', '안녕하세요. 다봄 채널 관리자입니다. 채널에 오신 것을 환영합니다!', 1, FALSE, '2025-08-19 07:35:35', '2025-08-19 07:35:35'),
