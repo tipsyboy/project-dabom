@@ -3,7 +3,9 @@ package com.dabom.channelboard.model.dto;
 
 import com.dabom.channelboard.model.entity.ChannelBoard;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 @Schema(description = "채널 게시글 수정 요청 DTO")
 public class ChannelBoardUpdateRequestDto {
 

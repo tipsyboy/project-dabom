@@ -33,7 +33,6 @@ public class BoardComment extends BaseEntity {
         this.isDeleted = true;
     }
 
-    // BoardComment.java
     public void updateContent(String content) {
         this.content = content;
     }

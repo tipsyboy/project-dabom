@@ -22,11 +22,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+      platform: mariadb
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+
 
 springdoc:
   swagger-ui:
