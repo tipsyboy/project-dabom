@@ -36,4 +36,8 @@ public class ChannelBoard extends BaseEntity {
     @JoinColumn(name = "Member_idx")
     private Member channel;
 
+    public void updateContents(String contents) {
+        this.contents = contents;
+    }
+
 }

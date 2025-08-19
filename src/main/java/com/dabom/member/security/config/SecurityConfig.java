@@ -78,6 +78,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
+
+
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/member/login").permitAll()
                                 .requestMatchers("/api/member/signup").permitAll()
@@ -88,6 +90,7 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                                 .anyRequest()
                                 .permitAll())
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();

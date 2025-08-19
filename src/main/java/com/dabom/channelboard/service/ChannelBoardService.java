@@ -65,8 +65,12 @@ public class ChannelBoardService {
     }
 
     public Integer update(ChannelBoardUpdateRequestDto dto) {
-        ChannelBoard result = channelBoardRepository.save(dto.toEntity());
-        return result.getIdx();
+        ChannelBoard result = channelBoardRepository.findById(dto.toEntity().getIdx())
+                .orElseThrow(()->new EntityNotFoundException(""));
+
+        result.updateContents(dto.getContents());
+
+        return channelBoardRepository.save(result).getIdx();
     }
 
     public void delete(Integer idx) {
