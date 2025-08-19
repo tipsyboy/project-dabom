@@ -1,4 +1,4 @@
-package com.dabom.video.service.utils;
+package com.dabom.video.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

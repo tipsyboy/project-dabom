@@ -1,7 +1,5 @@
 package com.dabom.video.controller;
 
-import com.dabom.video.service.VideoSegmentService;
-import com.dabom.video.service.VideoService;
 import com.dabom.video.service.VideoUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

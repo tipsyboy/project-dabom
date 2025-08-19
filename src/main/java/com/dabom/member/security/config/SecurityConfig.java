@@ -78,17 +78,19 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
-//                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                                .requestMatchers("/api/member/login").permitAll()
-//                                .requestMatchers("/api/member/signup").permitAll()
-//                                .requestMatchers("/api/member/exists/**").permitAll()
-//                                .requestMatchers("/api/channel/board/**").permitAll()
-//                                .requestMatchers("/oauth2/authorization/**").permitAll()
-//                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
-//                                .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
-//                                .anyRequest()
-//                                .authenticated())
-                                .anyRequest().permitAll())
+
+
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("/api/member/login").permitAll()
+                                .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/member/exists/**").permitAll()
+                                .requestMatchers("/api/channel/board/**").permitAll()
+                                .requestMatchers("/oauth2/authorization/**").permitAll()
+                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
+                                .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
+                                .anyRequest()
+                                .permitAll())
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();

@@ -43,5 +43,7 @@ out/
 .env
 src/main/resources/.env
 
-### ffmpeg ###
+### upload folders ###
 ffmpeg
+temp
+videos
