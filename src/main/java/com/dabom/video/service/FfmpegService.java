@@ -18,10 +18,10 @@ public class FfmpegService {
 
     public static final String SEGMENT_PATTERN = "segment_%03d.ts";
     public static final String INDEX_FILE_NAME = "index.m3u8";
-    @Value("${spring.ffmpeg.path}")
+    @Value("${file.ffmpeg.path}")
     private String ffmpegPath;
 
-    @Value("${spring.ffmpeg.hls.segment-duration}")
+    @Value("${file.ffmpeg.hls.segment-duration}")
     private int hlsSegmentDuration;
 
     public CompletableFuture<Path> encodeToHlsAsync(Path inputFile, Path outputDir) {
