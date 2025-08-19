@@ -3,6 +3,9 @@ package com.dabom.member.security.filter;
 import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.member.util.JwtUtils;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -24,10 +27,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Cookie[] cookies = request.getCookies();
-        String jwt = findDabomJWT(cookies);
 
-        haveTokenLogic(jwt);
+        String jwt = findDabomJWT(cookies);
+        exceptionHandler(jwt);
+
         filterChain.doFilter(request, response);
+    }
+
+    private void exceptionHandler(String jwt) {
+        try {
+            haveTokenLogic(jwt);
+        } catch (ExpiredJwtException e) {
+            // 만료 토큰 302 Redirect로 RefreshToken
+        } catch (SecurityException | MalformedJwtException e) {
+            // 잘못된 토큰 403 Error 내려주기
+        } catch (UnsupportedJwtException e) {
+            // 지원되지 않는 토큰 403 Error 내려주기
+        } catch (IllegalArgumentException e) {
+            // 빈 토큰 403 Error 내려주기
+        }
     }
 
     private String findDabomJWT(Cookie[] cookies) {
