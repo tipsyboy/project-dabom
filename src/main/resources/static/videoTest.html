@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>간단 HLS 테스트</title>
+</head>
+<body>
+<h1>간단 HLS 테스트 페이지</h1>
+<input id="videoId" type="text" placeholder="영상 ID 입력" />
+<button onclick="loadVideo()">불러오기</button>
+<br/><br/>
+<video id="player" controls autoplay style="width:80%;max-width:800px;background:#000;"></video>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.14/dist/hls.min.js"></script>
+<script>
+    function loadVideo(){
+        const id = document.getElementById('videoId').value.trim();
+        if(!id){ alert('ID를 입력하세요'); return; }
+        const url = `http://localhost:8080/api/videos/${id}/stream`; // 서버 URL 부분은 직접 교체
+        const video = document.getElementById('player');
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url; // Safari 등
+        } else {
+            alert('브라우저가 HLS를 지원하지 않습니다.');
+        }
+    }
+</script>
+</body>
+</html>
