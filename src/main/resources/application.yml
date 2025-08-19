@@ -27,3 +27,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  file:
+    upload:
+      path: ${FILE_UPLOAD_PATH}
+      url: ${FILE_UPLOAD_URL}

@@ -30,9 +30,12 @@ public class ChannelBoardController {
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<SliceBaseResponse<ChannelBoardReadResponseDto>>> list(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "oldest") String sort
     ) {
-        SliceBaseResponse<ChannelBoardReadResponseDto> result = channelBoardService.list(page, size);
+        SliceBaseResponse<ChannelBoardReadResponseDto> result =
+                channelBoardService.list(page,size,sort);
+
 
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK));
     }

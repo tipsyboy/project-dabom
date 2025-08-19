@@ -35,7 +35,8 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5174",
-                "http://192.168.52.1:5173"
+                "http://192.168.52.1:5173",
+                "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
@@ -72,23 +73,22 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/member/exists/**").permitAll()
+//                                .requestMatchers("/api/member/login").permitAll()
+//                                .requestMatchers("/api/member/signup").permitAll()
+//                                .requestMatchers("/api/member/exists/**").permitAll()
+//
+//                                .requestMatchers("api/channel/board/**").permitAll()
+//
+//
+//                                .requestMatchers("/oauth2/authorization/**").permitAll()
+//                                .requestMatchers("/api/**").permitAll()
+//
+//                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+//                                        "/swagger-resources/**", "/webjars/**").permitAll()
 
-                                .requestMatchers("api/channel/board/**").permitAll()
-
-
-                                .requestMatchers("/oauth2/authorization/**").permitAll()
-                                .requestMatchers("/api/**").permitAll()
-
-                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
-                                        "/swagger-resources/**", "/webjars/**").permitAll()
-
-
-                                .anyRequest()
-                                .authenticated())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                                .requestMatchers("/**").permitAll()
+                                .anyRequest().authenticated())
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
