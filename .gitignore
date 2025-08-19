@@ -42,3 +42,6 @@ out/
 ### env ###
 .env
 src/main/resources/.env
+
+### ffmpeg ###
+ffmpeg
