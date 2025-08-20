@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.dabom.member.constant.MemberSwaggerConstants.*;
+import static com.dabom.member.contants.MemberSwaggerConstants.*;
 import static com.dabom.member.contants.JWTConstants.ACCESS_TOKEN;
 
 @Tag(name = "멤버 관리 기능")

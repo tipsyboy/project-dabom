@@ -1,4 +1,4 @@
-package com.dabom.member.util;
+package com.dabom.member.utils;
 
 import com.dabom.member.model.dto.MemberSignupRequestDto;
 import com.dabom.member.service.MemberService;

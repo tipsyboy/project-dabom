@@ -1,4 +1,4 @@
-package com.dabom.member.constant;
+package com.dabom.member.contants;
 
 public abstract class MemberSwaggerConstants {
     public static final String SIGNUP_MEMBER_REQUEST = """

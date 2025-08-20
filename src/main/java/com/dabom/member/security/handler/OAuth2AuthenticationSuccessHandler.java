@@ -1,7 +1,7 @@
 package com.dabom.member.security.handler;
 
 import com.dabom.member.security.dto.MemberDetailsDto;
-import com.dabom.member.util.JwtUtils;
+import com.dabom.member.utils.JwtUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
