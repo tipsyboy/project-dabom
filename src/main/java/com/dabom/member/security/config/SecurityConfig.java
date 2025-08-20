@@ -72,7 +72,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors ->
-                        cors.configurationSource(corsConfigurationSource()))
+                        cors.configurationSource(corsConfigurationSource())
+                )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -83,15 +84,15 @@ public class SecurityConfig {
 
 
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/member/exists/**").permitAll()
-                                .requestMatchers("/api/channel/board/**").permitAll()
-                                .requestMatchers("/oauth2/authorization/**").permitAll()
-                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
-                                .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
-                                .anyRequest()
-                                .permitAll())
+//                                .requestMatchers("/api/member/login").permitAll()
+//                                .requestMatchers("/api/member/signup").permitAll()
+//                                .requestMatchers("/api/member/exists/**").permitAll()
+//                                .requestMatchers("/api/channel/board/**").permitAll()
+//                                .requestMatchers("/oauth2/authorization/**").permitAll()
+//                                .requestMatchers("/api/manager/**").hasRole(MemberRole.MANAGER.name())
+//                                .requestMatchers("/swagger-ui*/**", "/v3/api-docs/**", "/webjars/**").permitAll()
+                                .anyRequest().permitAll()
+                )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
