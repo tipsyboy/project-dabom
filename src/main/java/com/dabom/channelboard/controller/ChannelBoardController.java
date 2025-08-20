@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "채널 게시판 기능")
 @RestController
-@RequestMapping("/channel/board")
+@RequestMapping("/api/channel/board")
 @RequiredArgsConstructor
 public class ChannelBoardController {
     private final ChannelBoardService channelBoardService;
