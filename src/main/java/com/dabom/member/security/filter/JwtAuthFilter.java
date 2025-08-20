@@ -1,7 +1,7 @@
 package com.dabom.member.security.filter;
 
 import com.dabom.member.security.dto.MemberDetailsDto;
-import com.dabom.member.util.JwtUtils;
+import com.dabom.member.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

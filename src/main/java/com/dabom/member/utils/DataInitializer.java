@@ -1,4 +1,4 @@
-package com.dabom.member.util;
+package com.dabom.member.utils;
 
 import com.dabom.member.model.dto.MemberSignupRequestDto;
 import com.dabom.member.service.MemberService;
@@ -13,8 +13,20 @@ public class DataInitializer {
 
     @PostConstruct
     public void initData() {
-        MemberSignupRequestDto dto1 = new MemberSignupRequestDto("DabomTotalManager@dabom.com", "DabomTopManager", "Dabom!234", "MANAGER");
-        MemberSignupRequestDto dto2 = new MemberSignupRequestDto("DabomSubManager@dabom.com", "DabomSubManager", "Dabom1@34", "MANAGER");
+        MemberSignupRequestDto dto1 = MemberSignupRequestDto.builder()
+                .email("DabomTotalManager@dabom.com")
+                .channelName("DabomTopManager")
+                .password("Dabom!234")
+                .memberRole("MANAGER")
+                .build();
+
+        MemberSignupRequestDto dto2 = MemberSignupRequestDto.builder()
+                .email("DabomSubManager@dabom.com")
+                .channelName("DabomSubManager")
+                .password("Dabom1@34")
+                .memberRole("MANAGER")
+                .build();
+
         if(!memberService.checkMemberEmail("DabomTotalManager@dabom.com").isDuplicate()) {
             memberService.signUpMember(dto1);
         } if(!memberService.checkMemberEmail("DabomSubManager@dabom.com").isDuplicate()) {

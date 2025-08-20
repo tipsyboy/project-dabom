@@ -1,4 +1,4 @@
-package com.dabom.member.util;
+package com.dabom.member.utils;
 
 import com.dabom.member.model.entity.MemberRole;
 import io.jsonwebtoken.Claims;

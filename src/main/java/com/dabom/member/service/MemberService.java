@@ -4,7 +4,7 @@ import com.dabom.member.model.dto.*;
 import com.dabom.member.model.entity.Member;
 import com.dabom.member.repository.MemberRepository;
 import com.dabom.member.security.dto.MemberDetailsDto;
-import com.dabom.member.util.JwtUtils;
+import com.dabom.member.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,13 +25,13 @@ public class MemberService {
 
     @Transactional
     public void signUpMember(MemberSignupRequestDto dto) {
-        String encodedPassword = encoder.encode(dto.password());
+        String encodedPassword = encoder.encode(dto.getPassword());
         repository.save(dto.toEntity(encodedPassword));
     }
 
     public String loginMember(MemberLoginRequestDto dto) {
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(dto.email(), dto.password(), null);
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(), null);
         Authentication authenticate = manager.authenticate(token);
         MemberDetailsDto userDto = (MemberDetailsDto) authenticate.getPrincipal();
 
@@ -76,20 +76,20 @@ public class MemberService {
     }
 
     private void updateChannelContent(MemberUpdateChannelRequestDto dto, Member member) {
-        if(dto.content() != null) {
-            member.updateContent(dto.content());
+        if(dto.getContent() != null) {
+            member.updateContent(dto.getContent());
         }
     }
 
     private void updateChannelName(MemberUpdateChannelRequestDto dto, Member member) {
-        if(dto.name() != null) {
+        if(dto.getName() != null) {
             checkDuplicateName(dto);
-            member.updateName(dto.name());
+            member.updateName(dto.getName());
         }
     }
 
     private void checkDuplicateName(MemberUpdateChannelRequestDto dto) {
-        MemberChannelNameCheckResponseDto check = checkMemberChannelName(dto.name());
+        MemberChannelNameCheckResponseDto check = checkMemberChannelName(dto.getName());
         if(check.isDuplicate()) {
             throw new RuntimeException();
         }
