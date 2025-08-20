@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class MemberController {
             }
     )
     @PostMapping("/signup")
-    public ResponseEntity<BaseResponse<String>> signupMember(@RequestBody MemberSignupRequestDto dto) {
+    public ResponseEntity<BaseResponse<String>> signupMember(@Valid @RequestBody MemberSignupRequestDto dto) {
         memberService.signUpMember(dto);
         return ResponseEntity.ok(BaseResponse.of("회원 가입 성공", HttpStatus.OK));
     }
@@ -105,7 +106,7 @@ public class MemberController {
             }
     )
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<String>> loginMember(@RequestBody MemberLoginRequestDto dto) {
+    public ResponseEntity<BaseResponse<String>> loginMember(@Valid @RequestBody MemberLoginRequestDto dto) {
         String jwt = memberService.loginMember(dto);
         if (jwt != null) {
             ResponseCookie accessTokenCookie = ResponseCookie.from(ACCESS_TOKEN, jwt)
@@ -209,8 +210,8 @@ public class MemberController {
             }
     )
     @PostMapping("/exists/email")
-    public ResponseEntity<BaseResponse<MemberEmailCheckResponseDto>> checkEmail(@RequestBody MemberEmailCheckRequestDto dto) {
-        MemberEmailCheckResponseDto memberEmailCheckResponseDto = memberService.checkMemberEmail(dto.email());
+    public ResponseEntity<BaseResponse<MemberEmailCheckResponseDto>> checkEmail(@Valid @RequestBody MemberEmailCheckRequestDto dto) {
+        MemberEmailCheckResponseDto memberEmailCheckResponseDto = memberService.checkMemberEmail(dto.getEmail());
         return ResponseEntity.status(200).body(BaseResponse.of(memberEmailCheckResponseDto, HttpStatus.OK));
     }
 
@@ -250,8 +251,8 @@ public class MemberController {
             }
     )
     @PostMapping("/exists/channel")
-    public ResponseEntity<BaseResponse<MemberChannelNameCheckResponseDto>> checkChannelName(MemberChannelNameCheckRequestDto dto) {
-        MemberChannelNameCheckResponseDto memberChannelNameCheckResponseDto = memberService.checkMemberChannelName(dto.channelName());
+    public ResponseEntity<BaseResponse<MemberChannelNameCheckResponseDto>> checkChannelName(@Valid @RequestBody MemberChannelNameCheckRequestDto dto) {
+        MemberChannelNameCheckResponseDto memberChannelNameCheckResponseDto = memberService.checkMemberChannelName(dto.getChannelName());
         return ResponseEntity.status(200).body(BaseResponse.of(memberChannelNameCheckResponseDto, HttpStatus.OK));
     }
 
@@ -291,7 +292,7 @@ public class MemberController {
             }
     )
     @PatchMapping("/update")
-    public ResponseEntity<BaseResponse<String>> updateNameMember(@RequestBody MemberUpdateChannelRequestDto dto,
+    public ResponseEntity<BaseResponse<String>> updateNameMember(@Valid @RequestBody MemberUpdateChannelRequestDto dto,
                                            @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         memberService.updateMemberName(memberDetailsDto, dto);
         return ResponseEntity.ok(BaseResponse.of("회원 이름 변경 성공", HttpStatus.OK));

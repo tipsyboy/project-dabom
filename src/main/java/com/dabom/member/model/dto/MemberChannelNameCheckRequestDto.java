@@ -1,4 +1,10 @@
 package com.dabom.member.model.dto;
 
-public record MemberChannelNameCheckRequestDto(String channelName) {
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+
+@Getter
+public class MemberChannelNameCheckRequestDto {
+    @NotBlank
+    private String channelName;
 }
