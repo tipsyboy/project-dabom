@@ -38,10 +38,6 @@ public class MemberService {
         return JwtUtils.generateLoginToken(userDto.getIdx(), userDto.getEmail(), userDto.getMemberRole());
     }
 
-    public String logoutMember() {
-        return JwtUtils.generateLogOutToken();
-    }
-
     public MemberInfoResponseDto readMemberInfo(MemberDetailsDto dto) {
         Member member = getMemberFromSecurity(dto);
 
@@ -67,11 +63,8 @@ public class MemberService {
     @Transactional
     public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateChannelRequestDto dto) {
         Member member = getMemberFromSecurity(memberDetailsDto);
-        if(dto.name() != null) {
-            member.updateName(dto.name());
-        } if(dto.content() != null) {
-            member.updateContent(dto.content());
-        }
+        updateChannelName(dto, member);
+        updateChannelContent(dto, member);
         repository.save(member);
     }
 
@@ -80,6 +73,26 @@ public class MemberService {
         Member member = getMemberFromSecurity(dto);
         member.deleteMember();
         repository.save(member);
+    }
+
+    private void updateChannelContent(MemberUpdateChannelRequestDto dto, Member member) {
+        if(dto.content() != null) {
+            member.updateContent(dto.content());
+        }
+    }
+
+    private void updateChannelName(MemberUpdateChannelRequestDto dto, Member member) {
+        if(dto.name() != null) {
+            checkDuplicateName(dto);
+            member.updateName(dto.name());
+        }
+    }
+
+    private void checkDuplicateName(MemberUpdateChannelRequestDto dto) {
+        MemberChannelNameCheckResponseDto check = checkMemberChannelName(dto.name());
+        if(check.isDuplicate()) {
+            throw new RuntimeException();
+        }
     }
 
     private Member getMemberFromSecurity(MemberDetailsDto dto) {
