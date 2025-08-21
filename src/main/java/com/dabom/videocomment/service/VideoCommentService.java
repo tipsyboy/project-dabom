@@ -13,6 +13,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -45,11 +47,9 @@ public class VideoCommentService {
         videoCommentRepository.save(videoComment);
     }
 
-    public List<VideoCommentResponseDto> list(Integer videoIdx) {
-        List<VideoComment> result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalse(videoIdx);
-        return result.stream()
-                .map(VideoCommentResponseDto::from)
-                .toList();
+    public Slice<VideoCommentResponseDto> list(Integer videoIdx,  Pageable pageable) {
+        Slice<VideoComment> result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalse(videoIdx, pageable);
+        return result.map(VideoCommentResponseDto::from);
     }
 
     @Transactional
