@@ -1,6 +1,5 @@
 package com.dabom.video.model;
 
-import com.dabom.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,30 +20,34 @@ public class Video {
     private boolean isVisibility;
 
     private String originalFilename;  // 업로드한 원본 파일 이름 (예: user_uploaded.mp4)
-    private String savedPath; // 실제 저장된 경로 (로컬 경로 or S3 URL or m3u8 경로)
-
+    private String originalPath;
+    private Long originalSize;
     private String contentType; // MIME 타입 (video/mp4, application/x-mpegURL 등)
-    private Long size; // 파일 크기 (bytes)
+
+    private String savedPath; // 실제 저장된 경로 (로컬 경로 or S3 URL or m3u8 경로)
+    private Long savedSize; // 파일 크기 (bytes)
 
     @Enumerated(EnumType.STRING)
-    private EncodingStatus encodingStatus; // 인코딩 상태
-
+    private VideoStatus videoStatus; // 영상 상태
 
     @Builder
-    public Video(String title, String description, boolean isVisibility,
-                 String originalFilename, String savedPath,
-                 String contentType, Long size, EncodingStatus encodingStatus) {
-        this.title = title;
-        this.description = description;
+    public Video(String originalFilename, String originalPath, Long originalSize, String contentType, VideoStatus status) {
         this.originalFilename = originalFilename;
-        this.savedPath = savedPath;
+        this.originalPath = originalPath;
+        this.originalSize = originalSize;
         this.contentType = contentType;
-        this.size = size;
-        this.encodingStatus = encodingStatus;
+        this.videoStatus = status;
     }
 
-    public void updateByEncodingFile(EncodingStatus status) {
-        this.encodingStatus = status;
+    public void updateVideoStatus(VideoStatus status) {
+        this.videoStatus = status;
+    }
+
+    public void mappingVideoMetadata(String title, String description, boolean isVisibility) {
+        this.title = title;
+        this.description = description;
+        this.isVisibility = isVisibility;
+        this.videoStatus = VideoStatus.ENCODING; // 업로드 이후에 인코딩 상태로 변환
     }
 
     public void updateSavedPath(String savedPath) {
