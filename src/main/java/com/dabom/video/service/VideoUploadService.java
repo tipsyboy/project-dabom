@@ -29,37 +29,37 @@ public class VideoUploadService {
     private final FfmpegEncoder ffmpegEncoder;
     private final VideoStatusManager videoStatusManager;
 
-    public Integer upload(Integer videoId, MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
+    public Integer upload(MultipartFile video) throws IOException {
+        String originalFilename = video.getOriginalFilename();
         if (originalFilename == null || originalFilename.isEmpty()) {
             throw new IllegalArgumentException("파일 이름이 없습니다.");
         }
 
         // 1. 파일 임시 저장.
         String uuid = UUID.randomUUID().toString();
-        String savedTempPath = saveTempFile(file, originalFilename, uuid);
+        String savedTempPath = saveTempFile(video, originalFilename, uuid);
 
-        // 2. ffmpeg service에 HLS 인코딩 요청
-        String hlsOutputDir = createHlsDir(uuid);
+//        // 2. ffmpeg service에 HLS 인코딩 요청
+//        String hlsOutputDir = createHlsDir(uuid);
+//
+//        // 3. 비동기 인코딩 시작 (백그라운드)
+////        ffmpegService.encodeToHls(Paths.get(savedTempPath), Paths.get(hlsOutputDir));
+//        ffmpegEncoder.encodeToHlsAsync(Paths.get(savedTempPath), Paths.get(hlsOutputDir))
+//                .thenAccept(m3u8Path -> {
+//                    // 성공 시 (별도 스레드에서 실행)
+//                    log.info("인코딩 완료: {}", m3u8Path);
+//                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.COMPLETED, m3u8Path.toString());
+//                    sendNotification(videoId, "인코딩이 완료되었습니다.");
+//                })
+//                .exceptionally(throwable -> {
+//                    // 실패 시 (별도 스레드에서 실행)
+//                    log.error("인코딩 실패", throwable);
+//                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.FAILED, null);
+//                    sendNotification(videoId, "인코딩이 실패했습니다.");
+//                    return null;
+//                });
 
-        // 3. 비동기 인코딩 시작 (백그라운드)
-//        ffmpegService.encodeToHls(Paths.get(savedTempPath), Paths.get(hlsOutputDir));
-        ffmpegEncoder.encodeToHlsAsync(Paths.get(savedTempPath), Paths.get(hlsOutputDir))
-                .thenAccept(m3u8Path -> {
-                    // 성공 시 (별도 스레드에서 실행)
-                    log.info("인코딩 완료: {}", m3u8Path);
-                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.COMPLETED, m3u8Path.toString());
-                    sendNotification(videoId, "인코딩이 완료되었습니다.");
-                })
-                .exceptionally(throwable -> {
-                    // 실패 시 (별도 스레드에서 실행)
-                    log.error("인코딩 실패", throwable);
-                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.FAILED, null);
-                    sendNotification(videoId, "인코딩이 실패했습니다.");
-                    return null;
-                });
-
-        return videoId;
+        return 1;
     }
 
     // ===== ===== //
