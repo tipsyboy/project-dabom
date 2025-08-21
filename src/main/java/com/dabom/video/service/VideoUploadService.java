@@ -1,7 +1,9 @@
 package com.dabom.video.service;
 
 
-import com.dabom.video.model.EncodingStatus;
+import com.dabom.video.model.Video;
+import com.dabom.video.model.VideoStatus;
+import com.dabom.video.repository.VideoRepository;
 import com.dabom.video.utils.FfmpegEncoder;
 import com.dabom.video.utils.VideoStatusManager;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +28,29 @@ public class VideoUploadService {
     private static final String VIDEO_UPLOAD_DIR = "videos/";
     private static final String VIDEO_TEMP_DIR = "temp/";
 
-    private final FfmpegEncoder ffmpegEncoder;
-    private final VideoStatusManager videoStatusManager;
+    private final VideoRepository videoRepository;
 
-    public Integer upload(MultipartFile video) throws IOException {
-        String originalFilename = video.getOriginalFilename();
+    public Integer upload(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isEmpty()) {
             throw new IllegalArgumentException("파일 이름이 없습니다.");
         }
 
         // 1. 파일 임시 저장.
         String uuid = UUID.randomUUID().toString();
-        String savedTempPath = saveTempFile(video, originalFilename, uuid);
+        String savedTempPath = saveTempFile(file, originalFilename, uuid);
+
+        Video video = Video.builder()
+                .originalFilename(originalFilename)
+                .originalPath(savedTempPath)
+                .originalSize(file.getSize())
+                .status(VideoStatus.UPLOADING)
+                .contentType(file.getContentType())
+                .build();
+
+        Video savedVideo = videoRepository.save(video);
+        savedVideo.updateVideoStatus(VideoStatus.UPLOADED);
+        return savedVideo.getIdx();
 
 //        // 2. ffmpeg service에 HLS 인코딩 요청
 //        String hlsOutputDir = createHlsDir(uuid);
@@ -59,7 +72,6 @@ public class VideoUploadService {
 //                    return null;
 //                });
 
-        return 1;
     }
 
     // ===== ===== //

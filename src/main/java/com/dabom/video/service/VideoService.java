@@ -1,17 +1,14 @@
 package com.dabom.video.service;
 
-import com.dabom.video.model.EncodingStatus;
 import com.dabom.video.model.Video;
 import com.dabom.video.model.dto.VideoMetadataRequestDto;
 import com.dabom.video.repository.VideoRepository;
-import com.dabom.video.utils.FfmpegEncoder;
-import com.dabom.video.utils.VideoStatusManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,13 +20,16 @@ import java.nio.file.Paths;
 public class VideoService {
 
     private final VideoRepository videoRepository;
-    private final FfmpegEncoder ffmpegEncoder;
-    private final VideoStatusManager videoStatusManager;
 
+    @Transactional
+    public Integer mappingMetadata(VideoMetadataRequestDto requestDto) {
+        Video video = videoRepository.findById(requestDto.getIdx())
+                .orElseThrow(() -> new IllegalArgumentException("비디오를 찾을 수 없습니다. idx=" + requestDto.getIdx()));
 
-    public Integer createMetadata(VideoMetadataRequestDto requestDto) {
-        Video video = requestDto.toEntity();
-        return videoRepository.save(video).getIdx();
+        video.mappingVideoMetadata(requestDto.getTitle(), requestDto.getDescription(), requestDto.isVisibility());
+
+        // TODO: 리턴 뭐해야되지
+        return 1;
     }
 
     public Resource stream(Integer videoId) {
@@ -46,16 +46,4 @@ public class VideoService {
 
         return new FileSystemResource(m3u8Path);
     }
-
-    private Integer saveVideoEntity(MultipartFile file, String originalFilename) {
-        Video video = Video.builder()
-                .originalFilename(originalFilename)
-                .savedPath(null)
-                .size(file.getSize())
-                .contentType(file.getContentType())
-                .encodingStatus(EncodingStatus.PROCESSING)
-                .build();
-        return videoRepository.save(video).getIdx();
-    }
-
 }

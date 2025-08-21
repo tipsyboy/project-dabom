@@ -1,7 +1,7 @@
 package com.dabom.video.utils;
 
 
-import com.dabom.video.model.EncodingStatus;
+import com.dabom.video.model.VideoStatus;
 import com.dabom.video.model.Video;
 import com.dabom.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ public class VideoStatusManager {
     private final VideoRepository videoRepository;
 
     @Transactional
-    public void updateVideoRecord(Integer videoId, EncodingStatus status, String savedPath) {
+    public void updateVideoRecord(Integer videoId, VideoStatus status, String savedPath) {
         log.info("비디오 상태 업데이트 시작 - ID: {}, 상태: {}", videoId, status);
 
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new IllegalArgumentException("비디오를 찾을 수 없습니다: " + videoId));
 
-        video.updateByEncodingFile(status);
+        video.updateVideoStatus(status);
         if (savedPath != null) {
             video.updateSavedPath(savedPath);
         }

@@ -20,7 +20,7 @@ public class VideoUploadController {
     private final VideoUploadService videoUploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Integer> upload(@RequestPart MultipartFile video) throws IOException {
-        return ResponseEntity.ok(videoUploadService.upload(video));
+    public ResponseEntity<Integer> upload(@RequestPart MultipartFile file) throws IOException {
+        return ResponseEntity.ok(videoUploadService.upload(file));
     }
 }

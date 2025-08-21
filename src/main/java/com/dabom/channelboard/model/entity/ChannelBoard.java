@@ -33,7 +33,7 @@ public class ChannelBoard extends BaseEntity {
     private List<BoardComment> boardCommentList;
 
     @ManyToOne
-    @JoinColumn(name = "Member_idx")
+    @JoinColumn(name = "member_idx")
     private Member channel;
 
     public void updateContents(String contents) {
