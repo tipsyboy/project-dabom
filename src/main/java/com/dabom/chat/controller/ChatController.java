@@ -1,6 +1,6 @@
 package com.dabom.chat.controller;
 
-import com.dabom.chat.model.dto.ChartRoomReadResponseDto;
+import com.dabom.chat.model.dto.ChatRoomReadResponseDto;
 import com.dabom.chat.model.dto.ChatRoomRegisterRequestDto;
 import com.dabom.chat.model.entity.ChatRoom;
 import com.dabom.chat.serivce.ChatService;
@@ -25,7 +25,7 @@ public class ChatController {
     }
 
     @GetMapping("/list/{member1_idx}")
-    public ResponseEntity<BaseResponse<ChartRoomReadResponseDto>> listRoom(@RequestParam Integer member1_idx) {
+    public ResponseEntity<BaseResponse<ChatRoomReadResponseDto>> listRoom(@RequestParam Integer member1_idx) {
         List<ChatRoom> result = chatService.list(member1_idx);
         return null;
     }
