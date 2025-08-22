@@ -1,9 +1,10 @@
 package com.dabom.together.service;
 
 import com.dabom.member.model.entity.Member;
-import com.dabom.together.model.dto.request.TogetherJoinDeleteRequestDto;
+import com.dabom.member.repository.MemberRepository;
+import com.dabom.member.security.dto.MemberDetailsDto;
+import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherJoinInfoResponseDto;
-import com.dabom.together.model.dto.request.TogetherJoinMemberRequestDto;
 import com.dabom.together.model.dto.request.TogetherJoinWithCodeRequestDto;
 import com.dabom.together.model.entity.Together;
 import com.dabom.together.model.entity.TogetherJoinMember;
@@ -19,23 +20,35 @@ import org.springframework.transaction.annotation.Transactional;
 public class TogetherJoinMemberService {
     private final TogetherJoinMemberRepository togetherJoinMemberRepository;
     private final TogetherRepository togetherRepository;
+    private final MemberRepository memberRepository;
 
+    //TODO:
     @Transactional
-    public void joinTogetherMember(TogetherJoinMemberRequestDto dto, Member member) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
+    public TogetherInfoResponseDto joinTogetherMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+
+        TogetherJoinMember entity = toEntity(together, member);
         isPublicTogether(together);
-        joinTogetherMember(dto, member, together);
+        joinTogetherMember(entity, together);
+        return TogetherInfoResponseDto.toDto(together);
     }
 
     @Transactional
-    public void joinTogetherWithCodeMember(TogetherJoinWithCodeRequestDto dto, Member member) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
+    public TogetherInfoResponseDto joinTogetherWithCodeMember(Integer togetherIdx, TogetherJoinWithCodeRequestDto dto, MemberDetailsDto memberDetailsDto) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+
+        TogetherJoinMember entity = toEntity(together, member);
         validInvitedCode(dto, together);
-        joinTogetherMember(dto, member, together);
+        joinTogetherMember(entity, together);
+        return TogetherInfoResponseDto.toDto(together);
     }
 
-    public TogetherJoinInfoResponseDto loginTogetherMember(TogetherJoinMemberRequestDto dto, Member member) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
+    // Member가 속하 ㄴTogether List 서비스 개발....
+
+    public TogetherJoinInfoResponseDto loginTogetherMember(Integer togetherIdx, Member member) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
         TogetherJoinMember togetherJoinMember
                 = togetherJoinMemberRepository.findByMemberAndTogether(member, together).orElseThrow();
 
@@ -43,14 +56,24 @@ public class TogetherJoinMemberService {
     }
 
     @Transactional
-    public void leaveTogetherMember(TogetherJoinDeleteRequestDto dto, Member member) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
+    public void leaveTogetherMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+
         TogetherJoinMember togetherJoinMember
                 = togetherJoinMemberRepository.findByMemberAndTogether(member, together).orElseThrow();
-
         togetherJoinMember.leaveTogether();
 
         togetherJoinMemberRepository.save(togetherJoinMember);
+    }
+
+    private TogetherJoinMember toEntity(Together together, Member member) {
+        return TogetherJoinMember.builder()
+                .together(together)
+                .member(member)
+                .isJoin(true)
+                .isDelete(false)
+                .build();
     }
 
     private void isPublicTogether(Together together) {
@@ -59,9 +82,8 @@ public class TogetherJoinMemberService {
         }
     }
 
-    private void joinTogetherMember(TogetherJoinMemberRequestDto dto, Member member, Together together) {
+    private void joinTogetherMember(TogetherJoinMember entity, Together together) {
         if(together.getMaxMemberNum() > together.getJoinMemberNum()){
-            TogetherJoinMember entity = dto.toEntity(together, member);
             togetherJoinMemberRepository.save(entity);
             together.joinMember();
             togetherRepository.save(together);

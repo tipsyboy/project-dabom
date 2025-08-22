@@ -3,11 +3,10 @@ package com.dabom.together.controller;
 import com.dabom.common.BaseResponse;
 import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.member.service.MemberService;
-import com.dabom.together.model.dto.request.TogetherChangeTitleRequestDto;
-import com.dabom.together.model.dto.request.TogetherCreateRequestDto;
-import com.dabom.together.model.dto.request.TogetherSearchRequestDto;
+import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
+import com.dabom.together.service.TogetherJoinMemberService;
 import com.dabom.together.service.TogetherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TogetherController {
     private final TogetherService togetherService;
-    private final MemberService memberService;
+    private final TogetherJoinMemberService togetherJoinMemberService;
 
     @PostMapping("/save")
     public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> saveTogether(@RequestBody TogetherCreateRequestDto dto,
@@ -41,11 +40,64 @@ public class TogetherController {
         return ResponseEntity.ok(BaseResponse.of(togetherListResponseDto, HttpStatus.OK));
     }
 
-    @PatchMapping("/change/{togetherIdx}")
+    @PostMapping("{togetherIdx}/code")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> joinTogetherWithCode(@PathVariable Integer togetherIdx,
+                                                               @RequestBody TogetherJoinWithCodeRequestDto dto,
+                                                               @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto responseDto =
+                togetherJoinMemberService.joinTogetherWithCodeMember(togetherIdx, dto, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
+    }
+
+    @PostMapping("/{togetherIdx}")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> joinOpenTogether(@PathVariable Integer togetherIdx,
+                                                           @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto responseDto = togetherJoinMemberService.joinTogetherMember(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
+    }
+
+    @GetMapping("/{togetherIdx}")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> joinTogether(@PathVariable Integer togetherIdx,
+                                                       @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto responseDto = togetherJoinMemberService.joinTogetherMember(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
+    }
+
+    @PatchMapping("/{togetherIdx}/change/title")
     public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> changeTogetherTitle(@PathVariable Integer togetherIdx,
                                                               @RequestBody TogetherChangeTitleRequestDto dto,
                                                               @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         TogetherInfoResponseDto togetherInfoResponseDto = togetherService.changeTogetherTitle(togetherIdx, dto, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(togetherInfoResponseDto, HttpStatus.OK));
+    }
+
+    @PatchMapping("/{togetherIdx}/change/max_number")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> changeTogetherMaxMemberNumber(@PathVariable Integer togetherIdx,
+                                                                                     @RequestBody TogetherChangeMaxMemberRequestDto dto,
+                                                                                     @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto togetherInfoResponseDto = togetherService.changeMaxMember(togetherIdx, dto, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(togetherInfoResponseDto, HttpStatus.OK));
+    }
+
+    @DeleteMapping("/{togetherIdx}/kick")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> kickMember(@PathVariable Integer togetherIdx,
+                                                     @RequestBody TogetherKickMemberRequestDto dto,
+                                                     @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto response = togetherService.kickTogetherMember(togetherIdx, dto, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(response, HttpStatus.OK));
+    }
+
+    @DeleteMapping("/{togetherIdx}")
+    public ResponseEntity<BaseResponse<String>> deleteTogether(@PathVariable Integer togetherIdx,
+                                                               @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        togetherService.deleteTogether(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of("투게더가 삭제되었습니다.", HttpStatus.OK));
+    }
+
+    @DeleteMapping("/{togetherIdx}/member")
+    public ResponseEntity<BaseResponse<String>> deleteTogetherMember(@PathVariable Integer togetherIdx,
+                                                               @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        togetherJoinMemberService.leaveTogetherMember(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of("멤버가 속한 투게더가 삭제되었습니다.", HttpStatus.OK));
     }
 }

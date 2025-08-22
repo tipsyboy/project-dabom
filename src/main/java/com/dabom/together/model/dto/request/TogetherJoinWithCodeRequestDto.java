@@ -3,7 +3,6 @@ package com.dabom.together.model.dto.request;
 import lombok.Getter;
 
 @Getter
-public class TogetherJoinWithCodeRequestDto extends TogetherJoinMemberRequestDto {
-    private Integer togetherIdx;
+public class TogetherJoinWithCodeRequestDto {
     private String code;
 }

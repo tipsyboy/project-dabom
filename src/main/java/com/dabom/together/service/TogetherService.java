@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,42 +45,52 @@ public class TogetherService {
     public TogetherInfoResponseDto changeTogetherTitle(Integer togetherIdx,
                                                        TogetherChangeTitleRequestDto dto,
                                                        MemberDetailsDto memberDetailsDto) {
-        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
-        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
-
-        if(!together.getMaster().equals(member)) {
-            throw new RuntimeException();
-        }
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
         together.changeTitle(dto.getTitle());
         Together save = togetherRepository.save(together);
         return TogetherInfoResponseDto.toDto(save);
     }
 
     @Transactional
-    public void changeMaxJoinMember() {
+    public TogetherInfoResponseDto changeMaxMember(Integer togetherIdx, TogetherChangeMaxMemberRequestDto dto,
+                                MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
 
+        together.changeMaxMemberNumber(dto.getMaxMember());
+        Together save = togetherRepository.save(together);
+
+        return TogetherInfoResponseDto.toDto(save);
     }
 
     @Transactional
-    public void kickTogetherMember(TogetherKickMemberRequestDto dto) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
-        Member member = memberRepository.findById(dto.getKickedMemberIdx()).orElseThrow();
+    public TogetherInfoResponseDto kickTogetherMember(Integer togetherIdx, TogetherKickMemberRequestDto dto,
+                                   MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
 
+        Member member = memberRepository.findById(dto.getKickedMemberIdx()).orElseThrow();
         TogetherJoinMember kickMember = togetherJoinMemberRepository.findByMemberAndTogether(member, together).orElseThrow();
         kickMember.expel();
 
         togetherJoinMemberRepository.save(kickMember);
+        together.leaveMember();
+        Together save = togetherRepository.save(together);
+        return TogetherInfoResponseDto.toDto(save);
     }
 
     @Transactional
-    public void deleteTogether(TogetherDeleteRequestDto dto, Member member) {
-        Together together = togetherRepository.findById(dto.getTogetherIdx()).orElseThrow();
+    public void deleteTogether(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
 
-        if(!member.equals(together.getMaster())) {
+        together.deleteTogether();
+        togetherRepository.save(together);
+    }
+
+    private Together validMasterMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+        if(!together.getMaster().equals(member)) {
             throw new RuntimeException();
         }
-        together.deleteTogether();
-
-        togetherRepository.save(together);
+        return together;
     }
 }
