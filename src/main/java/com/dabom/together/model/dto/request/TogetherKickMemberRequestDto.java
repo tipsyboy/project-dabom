@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class TogetherKickMemberRequestDto {
-    private Integer togetherIdx;
     private Integer kickedMemberIdx;
 }

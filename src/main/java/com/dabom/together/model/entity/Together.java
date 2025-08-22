@@ -47,6 +47,10 @@ public class Together {
         this.joinMemberNum++;
     }
 
+    public void leaveMember() {
+        this.joinMemberNum--;
+    }
+
     public void changeTitle(String title) {
         this.title = title;
     }

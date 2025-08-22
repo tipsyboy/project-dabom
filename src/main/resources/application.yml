@@ -49,4 +49,5 @@ file:
     hls:
       segment-duration: ${FFMPEG_SEGMENT_DURATION}
 
-server-address: &{SERVER-ADDRESS}
+websocket:
+  allowed-origin: ${SERVER}
