@@ -1,4 +1,4 @@
-package com.dabom.together.model.dto;
+package com.dabom.together.model.dto.request;
 
 import com.dabom.member.model.entity.Member;
 import com.dabom.together.model.entity.Together;

@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,12 +19,17 @@ public class Together {
     private String title;
     private String videoUrl;
     private Integer maxMemberNum;
+    private Integer joinMemberNum;
     private Boolean isOpen;
     private Boolean isDelete;
+    private String invitedCode;
+
     @ManyToOne
     @JoinColumn(name = "master_idx")
     private Member master;
-    private String invitedCode;
+
+    @OneToMany(mappedBy = "together")
+    private List<TogetherJoinMember> members;
 
     @Builder
     public Together(String title, String videoUrl, Integer maxMemberNum, Boolean isOpen, Boolean isDelete, Member master, String invitedCode) {
@@ -33,6 +40,11 @@ public class Together {
         this.isDelete = isDelete;
         this.master = master;
         this.invitedCode = invitedCode;
+        this.joinMemberNum = 1;
+    }
+
+    public void joinMember() {
+        this.joinMemberNum++;
     }
 
     public void changeTitle(String title) {
