@@ -1,4 +1,4 @@
-package com.dabom.together.model.dto;
+package com.dabom.together.model.dto.request;
 
 import com.dabom.member.model.entity.Member;
 import com.dabom.together.model.entity.Together;
@@ -6,9 +6,8 @@ import com.dabom.together.model.entity.TogetherJoinMember;
 import lombok.Getter;
 
 @Getter
-public class TogetherJoinWithCodeRequestDto {
+public class TogetherJoinMemberRequestDto {
     private Integer togetherIdx;
-    private String code;
 
     public TogetherJoinMember toEntity(Together together, Member member) {
         return TogetherJoinMember.builder()
