@@ -6,6 +6,7 @@ import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherJoinInfoResponseDto;
 import com.dabom.together.model.dto.request.TogetherJoinWithCodeRequestDto;
+import com.dabom.together.model.dto.response.TogetherListResponseDto;
 import com.dabom.together.model.entity.Together;
 import com.dabom.together.model.entity.TogetherJoinMember;
 import com.dabom.together.repository.TogetherJoinMemberRepository;
@@ -13,6 +14,8 @@ import com.dabom.together.repository.TogetherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,15 +25,13 @@ public class TogetherJoinMemberService {
     private final TogetherRepository togetherRepository;
     private final MemberRepository memberRepository;
 
-    //TODO:
     @Transactional
     public TogetherInfoResponseDto joinTogetherMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
         Together together = togetherRepository.findById(togetherIdx).orElseThrow();
         Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+        TogetherJoinMember joinMember =
+                togetherJoinMemberRepository.findByMemberAndTogether(member, together).orElseThrow();
 
-        TogetherJoinMember entity = toEntity(together, member);
-        isPublicTogether(together);
-        joinTogetherMember(entity, together);
         return TogetherInfoResponseDto.toDto(together);
     }
 
@@ -45,7 +46,15 @@ public class TogetherJoinMemberService {
         return TogetherInfoResponseDto.toDto(together);
     }
 
-    // Member가 속하 ㄴTogether List 서비스 개발....
+    public TogetherListResponseDto getTogethersFromMember(MemberDetailsDto memberDetailsDto) {
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+        List<TogetherJoinMember> togethers = togetherJoinMemberRepository.findByMember(member);
+        List<Together> togetherList = togethers.stream()
+                .map(TogetherJoinMember::getTogether)
+                .toList();
+        return TogetherListResponseDto.toDto(togetherList);
+
+    }
 
     public TogetherJoinInfoResponseDto loginTogetherMember(Integer togetherIdx, Member member) {
         Together together = togetherRepository.findById(togetherIdx).orElseThrow();
