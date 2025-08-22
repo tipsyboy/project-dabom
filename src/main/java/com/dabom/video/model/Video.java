@@ -47,7 +47,7 @@ public class Video {
         this.title = title;
         this.description = description;
         this.isVisibility = isVisibility;
-        this.videoStatus = VideoStatus.ENCODING; // 업로드 이후에 인코딩 상태로 변환
+        this.videoStatus = VideoStatus.ENCODING_PENDING;
     }
 
     public void updateSavedPath(String savedPath) {
