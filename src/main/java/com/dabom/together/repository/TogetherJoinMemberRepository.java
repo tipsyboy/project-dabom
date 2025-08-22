@@ -5,8 +5,10 @@ import com.dabom.together.model.entity.Together;
 import com.dabom.together.model.entity.TogetherJoinMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TogetherJoinMemberRepository extends JpaRepository<TogetherJoinMember, Integer> {
     Optional<TogetherJoinMember> findByMemberAndTogether(Member member, Together together);
+    List<TogetherJoinMember> findByMember(Member member);
 }
