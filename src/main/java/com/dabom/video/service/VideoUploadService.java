@@ -25,7 +25,6 @@ import java.util.UUID;
 @Service
 public class VideoUploadService {
 
-    private static final String VIDEO_UPLOAD_DIR = "videos/";
     private static final String VIDEO_TEMP_DIR = "temp/";
 
     private final VideoRepository videoRepository;
@@ -98,19 +97,5 @@ public class VideoUploadService {
     private String extractExtension(String originalFileName) {
         int pos = originalFileName.lastIndexOf(".");
         return originalFileName.substring(pos + 1);
-    }
-
-    private String createHlsDir(String uuid) throws IOException {
-        String outputPath = VIDEO_UPLOAD_DIR +
-                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) + "/"
-                + uuid;
-        Path hlsOutputPath = Paths.get(outputPath);
-        Files.createDirectories(hlsOutputPath);
-        return hlsOutputPath.toAbsolutePath().toString();
-    }
-
-    private void sendNotification(Integer id, String message) {
-        // 알림 발송 로직
-        log.info("알림 발송 - ID: {}, 메시지: {}", id, message);
     }
 }

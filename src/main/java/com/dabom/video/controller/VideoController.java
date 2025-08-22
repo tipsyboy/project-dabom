@@ -20,9 +20,9 @@ public class VideoController {
 
     private final VideoService videoService;
 
-    @PostMapping("/metadata/{videoIdx}")
+    @PatchMapping("/metadata/{videoIdx}")
     public ResponseEntity<BaseResponse<Integer>> uploadData(@PathVariable Integer videoIdx,
-                                       @RequestBody VideoMetadataRequestDto requestDto) throws IOException {
+                                                            @RequestBody VideoMetadataRequestDto requestDto) throws IOException {
         Integer i = videoService.mappingMetadata(requestDto);
 
         return ResponseEntity.ok(BaseResponse.of(i, HttpStatus.OK));

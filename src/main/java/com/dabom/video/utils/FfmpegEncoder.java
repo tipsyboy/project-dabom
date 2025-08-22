@@ -8,15 +8,22 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
 public class FfmpegEncoder {
 
-    public static final String SEGMENT_PATTERN = "segment_%03d.ts";
-    public static final String INDEX_FILE_NAME = "index.m3u8";
+    private static final String VIDEO_UPLOAD_DIR = "videos/";
+    private static final String INDEX_FILE_NAME = "index.m3u8";
+    private static final String SEGMENT_PATTERN = "segment_%08d.ts";
 
     @Value("${file.ffmpeg.path}")
     private String ffmpegPath;
@@ -24,57 +31,52 @@ public class FfmpegEncoder {
     @Value("${file.ffmpeg.hls.segment-duration}")
     private int hlsSegmentDuration;
 
-    @Async("ffmpegExecutor") // 사용할 스레드풀 지정
-    public CompletableFuture<Path> encodeToHlsAsync(Path inputFile, Path outputDir) {
+    public void encode(String originalPath) throws IOException {
+        log.debug(">>>>>> start ffmpeg encoder >>>>>>");
+
         try {
-            log.info("백그라운드에서 인코딩 시작: {}", Thread.currentThread().getName());
-
-            Path m3u8Path = outputDir.resolve(INDEX_FILE_NAME);
-            Path segmentPattern = getSegmentPattern(outputDir);
-
-            Process process = buildProcessingCommand(inputFile, segmentPattern, m3u8Path);
-
-            StringBuilder output = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
-                    log.debug("FFmpeg[{}]: {}", Thread.currentThread().getName(), line);
-                }
-            }
+            Path encodingDir = makeEncodingDir();
+            Process process = buildProcessingCommand(originalPath, encodingDir);
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                throw new RuntimeException("FFmpeg 실패: " + output.toString());
+                log.error("Video 인코딩 실패 (exitCode={})", exitCode);
             }
-
-            log.info("인코딩 완료: {} (스레드: {})", m3u8Path, Thread.currentThread().getName());
-            return CompletableFuture.completedFuture(m3u8Path);
-
         } catch (Exception e) {
-            log.error("인코딩 실패", e);
-            throw new RuntimeException("인코딩 실패", e);
+            log.error("Video 인코딩 중 예외 발생", e);
         }
     }
 
-    private Process buildProcessingCommand(Path inputFile, Path segmentPattern, Path m3u8Path) throws IOException {
+    // ===== ===== //
+    private Process buildProcessingCommand(String originalPath, Path encodingDir) throws IOException {
+        Path segmentPattern = encodingDir.resolve(SEGMENT_PATTERN);
+        Path indexFile = encodingDir.resolve(INDEX_FILE_NAME);
+
         ProcessBuilder pb = new ProcessBuilder(
                 ffmpegPath,
-                "-i", inputFile.toString(),
+                "-i", originalPath,
                 "-c", "copy",
                 "-hls_time", String.valueOf(hlsSegmentDuration),
                 "-hls_list_size", "0",
                 "-f", "hls",
                 "-hls_segment_filename", segmentPattern.toString(),
                 "-y",
-                m3u8Path.toString()
+                indexFile.toString()
         );
 
         pb.redirectErrorStream(true);
         return pb.start();
     }
-    private Path getSegmentPattern(Path outputDir) {
-        Path normalizedDir = outputDir.normalize().toAbsolutePath();
-        return normalizedDir.resolve(SEGMENT_PATTERN);
+
+    private Path makeEncodingDir() throws IOException {
+        UUID uuid = UUID.randomUUID();
+
+        Path encodingDir = Paths.get(
+                VIDEO_UPLOAD_DIR,
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy/MM/dd")),
+                uuid.toString()
+        );
+        Files.createDirectories(encodingDir);
+        return encodingDir;
     }
 }
