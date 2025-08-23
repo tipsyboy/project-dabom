@@ -6,6 +6,9 @@ import com.dabom.channelboard.model.dto.ChannelBoardUpdateRequestDto;
 import com.dabom.channelboard.model.entity.ChannelBoard;
 import com.dabom.channelboard.repositroy.ChannelBoardRepository;
 import com.dabom.common.SliceBaseResponse;
+import com.dabom.member.model.entity.Member;
+import com.dabom.member.repository.MemberRepository;
+import com.dabom.member.security.dto.MemberDetailsDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,24 +23,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChannelBoardService {
     private final ChannelBoardRepository channelBoardRepository;
+    private final MemberRepository memberRepository;
 
-    public Integer register(ChannelBoardRegisterRequestDto dto) {
-        ChannelBoard result = channelBoardRepository.save(dto.toEntity());
+    public Integer register(ChannelBoardRegisterRequestDto dto
+            , MemberDetailsDto memberDetailsDto) {
+        Member memberIdx = memberRepository.findById(memberDetailsDto.getIdx()).
+                orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+        ChannelBoard result = channelBoardRepository.save(dto.toEntity(memberIdx));
         return result.getIdx();
     }
 
     public SliceBaseResponse<ChannelBoardReadResponseDto> list(
-            Integer page, Integer size, String sort) {
+            Integer page, Integer size, String sort, MemberDetailsDto memberDetailsDto) {
         Pageable pageable = PageRequest.of(page, size);
         Slice<ChannelBoard> channelBoardSlice;
 
         switch (sort) {
             case "latest":
-                channelBoardSlice = channelBoardRepository.findAllByIsDeletedFalseOrderByIdxDesc(pageable);
+                channelBoardSlice = channelBoardRepository.findAllByChannelIdxAndIsDeletedFalseOrderByIdxDesc(
+                        memberDetailsDto.getIdx(), pageable);
                 break;
             case "oldest":
             default:
-                channelBoardSlice = channelBoardRepository.findAllByIsDeletedFalseOrderByIdxAsc(pageable);
+                channelBoardSlice = channelBoardRepository.findAllByChannelIdxAndIsDeletedFalseOrderByIdxAsc(
+                        memberDetailsDto.getIdx(), pageable);
                 break;
         }
 
@@ -49,7 +58,7 @@ public class ChannelBoardService {
                 })
                 .toList();
 
-        Long totalCount = channelBoardRepository.countByIsDeletedFalse();
+        Long totalCount = channelBoardRepository.countByChannelIdxAndIsDeletedFalse(memberDetailsDto.getIdx());
         return new SliceBaseResponse<ChannelBoardReadResponseDto>(content, channelBoardSlice.hasNext(), totalCount);
     }
 
@@ -66,9 +75,9 @@ public class ChannelBoardService {
 
     public Integer update(ChannelBoardUpdateRequestDto dto) {
         ChannelBoard result = channelBoardRepository.findById(dto.toEntity().getIdx())
-                .orElseThrow(()->new EntityNotFoundException(""));
+                .orElseThrow(() -> new EntityNotFoundException(""));
 
-        result.updateContents(dto.getContents());
+        result.update(dto.getTitle(),dto.getContents());
 
         return channelBoardRepository.save(result).getIdx();
     }

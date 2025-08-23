@@ -20,7 +20,7 @@ public class ChannelBoardReadResponseDto {
     private String contents;
 
     @Schema(description = "게시글 생성일", example = "2025-08-18 15:30:00")
-    private String createAt;
+    private String createdAt;
 
     @Schema(description = "댓글 개수", example = "5")
     private Integer commentCount;
@@ -32,7 +32,7 @@ public class ChannelBoardReadResponseDto {
                 .idx(entity.getIdx())
                 .title(entity.getTitle())
                 .contents(entity.getContents())
-                .createAt(entity.getCreatedAt().format(formatter))
+                .createdAt(entity.getCreatedAt().format(formatter))
                 .commentCount(0) // 기본값
                 .build();
     }
@@ -45,7 +45,7 @@ public class ChannelBoardReadResponseDto {
                 .idx(entity.getIdx())
                 .title(entity.getTitle())
                 .contents(entity.getContents())
-                .createAt(entity.getCreatedAt().format(formatter))
+                .createdAt(entity.getCreatedAt().format(formatter))
                 .commentCount(commentCount.intValue())
 
 

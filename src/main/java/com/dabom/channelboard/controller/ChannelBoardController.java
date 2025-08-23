@@ -7,6 +7,7 @@ import com.dabom.channelboard.model.dto.ChannelBoardUpdateRequestDto;
 import com.dabom.channelboard.service.ChannelBoardService;
 import com.dabom.common.BaseResponse;
 import com.dabom.common.SliceBaseResponse;
+import com.dabom.member.security.dto.MemberDetailsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "채널 게시판 기능")
@@ -62,8 +64,9 @@ public class ChannelBoardController {
             }
     )
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<Integer>> register(@RequestBody ChannelBoardRegisterRequestDto dto) {
-        Integer result = channelBoardService.register(dto);
+    public ResponseEntity<BaseResponse<Integer>> register(@RequestBody ChannelBoardRegisterRequestDto dto
+            , @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        Integer result = channelBoardService.register(dto, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "게시글 등록 성공"));
     }
 
@@ -99,8 +102,10 @@ public class ChannelBoardController {
     public ResponseEntity<BaseResponse<SliceBaseResponse<ChannelBoardReadResponseDto>>> list(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "oldest") String sort) {
-        SliceBaseResponse<ChannelBoardReadResponseDto> result = channelBoardService.list(page, size, sort);
+            @RequestParam(defaultValue = "oldest") String sort,
+            @AuthenticationPrincipal MemberDetailsDto memberDetailsDto
+    ) {
+        SliceBaseResponse<ChannelBoardReadResponseDto> result = channelBoardService.list(page, size, sort, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(result, HttpStatus.OK, "게시글 목록 조회 성공"));
     }
 
@@ -212,7 +217,7 @@ public class ChannelBoardController {
                     )
             }
     )
-    @DeleteMapping("/{boardIdx}")
+    @DeleteMapping("/delete/{boardIdx}")
     public ResponseEntity<Void> delete(@PathVariable Integer boardIdx) {
         channelBoardService.delete(boardIdx);
         return ResponseEntity.noContent().build();
