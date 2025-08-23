@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ChannelBoardUpdateRequestDto {
 
     @Schema(description = "게시글 고유 ID", example = "1")
-    private Integer idx;
+    private Integer boardIdx;
 
     @Schema(description = "게시글 제목", example = "공지사항 수정 제목")
     private String title;
@@ -23,7 +23,7 @@ public class ChannelBoardUpdateRequestDto {
 
     public ChannelBoard toEntity() {
         return ChannelBoard.builder()
-                .idx(idx)
+                .idx(boardIdx)
                 .title(title)
                 .contents(contents)
                 .build();

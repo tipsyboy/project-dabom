@@ -22,11 +22,12 @@ public class ChannelBoard extends BaseEntity {
 
 
     @Builder
-    public ChannelBoard(Integer idx, String title, String contents) {
+    public ChannelBoard(Integer idx, String title, String contents, Member channel) {
         this.idx = idx;
         this.title = title;
         this.contents = contents;
         this.isDeleted = false;
+        this.channel = channel;
     }
 
     @OneToMany(mappedBy = "channelBoard")
@@ -36,7 +37,8 @@ public class ChannelBoard extends BaseEntity {
     @JoinColumn(name = "member_idx")
     private Member channel;
 
-    public void updateContents(String contents) {
+    public void update(String title,String contents) {
+        this.title = title;
         this.contents = contents;
     }
 
