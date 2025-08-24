@@ -5,6 +5,7 @@ import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
+import com.dabom.together.model.dto.response.TogetherMemberListResponseDto;
 import com.dabom.together.service.TogetherJoinMemberService;
 import com.dabom.together.service.TogetherService;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,13 @@ public class TogetherController {
         return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
     }
 
+    @GetMapping("/{togetherIdx}/master")
+    public ResponseEntity<BaseResponse<TogetherMemberListResponseDto>> getTogetherListFromMaster(@PathVariable Integer togetherIdx,
+                                                                              @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherMemberListResponseDto members = togetherService.getTogetherMembersFromMaster(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(members, HttpStatus.OK));
+    }
+
     @GetMapping("/{togetherIdx}")
     public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> joinTogether(@PathVariable Integer togetherIdx,
                                                        @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
@@ -108,9 +116,9 @@ public class TogetherController {
 
     @DeleteMapping("/{togetherIdx}/kick")
     public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> kickMember(@PathVariable Integer togetherIdx,
-                                                     @RequestBody TogetherKickMemberRequestDto dto,
+                                                                            @RequestParam Integer kickedMemberIdx,
                                                      @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
-        TogetherInfoResponseDto response = togetherService.kickTogetherMember(togetherIdx, dto, memberDetailsDto);
+        TogetherInfoResponseDto response = togetherService.kickTogetherMember(togetherIdx, kickedMemberIdx, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(response, HttpStatus.OK));
     }
 
