@@ -9,13 +9,13 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
-#  sql:
-#    init:
-#      mode: always
-#      platform: mariadb
-#      schema-locations: classpath:schema.sql
-#      data-locations: classpath:data.sql
+      ddl-auto: none
+  sql:
+    init:
+      mode: always
+      platform: mariadb
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
 
   servlet:
     multipart:
