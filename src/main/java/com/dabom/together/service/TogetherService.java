@@ -6,6 +6,7 @@ import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
+import com.dabom.together.model.dto.response.TogetherMemberListResponseDto;
 import com.dabom.together.model.entity.Together;
 import com.dabom.together.model.entity.TogetherJoinMember;
 import com.dabom.together.repository.TogetherJoinMemberRepository;
@@ -28,6 +29,13 @@ public class TogetherService {
     public TogetherInfoResponseDto createTogether(TogetherCreateRequestDto dto, MemberDetailsDto memberDetailsDto) {
         Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
         Together together = togetherRepository.save(dto.toEntity(member));
+        TogetherJoinMember togetherJoinMember = TogetherJoinMember.builder()
+                .isJoin(true)
+                .isDelete(false)
+                .member(member)
+                .together(together)
+                .build();
+        togetherJoinMemberRepository.save(togetherJoinMember);
         return TogetherInfoResponseDto.toDto(together);
     }
 
@@ -73,6 +81,12 @@ public class TogetherService {
         return TogetherInfoResponseDto.toDto(save);
     }
 
+    public TogetherMemberListResponseDto getTogetherMembersFromMaster(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
+
+        return TogetherMemberListResponseDto.toDto(together);
+    }
+
     @Transactional
     public TogetherInfoResponseDto changeVideo(Integer togetherIdx, TogetherChangeVideoRequestDto dto,
                                                 MemberDetailsDto memberDetailsDto) {
@@ -85,11 +99,11 @@ public class TogetherService {
     }
 
     @Transactional
-    public TogetherInfoResponseDto kickTogetherMember(Integer togetherIdx, TogetherKickMemberRequestDto dto,
+    public TogetherInfoResponseDto kickTogetherMember(Integer togetherIdx, Integer memberIdx,
                                    MemberDetailsDto memberDetailsDto) {
         Together together = validMasterMember(togetherIdx, memberDetailsDto);
 
-        Member member = memberRepository.findById(dto.getKickedMemberIdx()).orElseThrow();
+        Member member = memberRepository.findById(memberIdx).orElseThrow();
         TogetherJoinMember kickMember = togetherJoinMemberRepository.findByMemberAndTogether(member, together).orElseThrow();
         kickMember.expel();
 
