@@ -81,9 +81,11 @@ INSERT IGNORE INTO board_comment (content, board_idx, is_deleted, created_at, up
 
 -- Video 테이블 데이터 삽입 (10개)
 -- Video 테이블 데이터 삽입 (10개)
-INSERT IGNORE INTO video (title, description, isVisibility, originalFilename,
-    originalPath, originalSize, contentType, savedPath, savedSize, videoStatus,
-    createdAt, updatedAt) VALUES
+INSERT IGNORE INTO video (title, description,
+       is_visibility, original_filename, original_path, original_size,
+       content_type, saved_path, saved_size, video_status, created_at, updated_at)
+       VALUES
+
 
 ('다봄 서비스 소개 영상', '다봄 플랫폼의 주요 기능과 특징을 소개하는 영상입니다.', TRUE, 'intro.mp4',
     '/temp/2025/01/15/uuid1/intro.mp4', 15728640, 'video/mp4', '/videos/2025/01/15/uuid1/index.m3u8', 16000000, 'DONE',
@@ -118,6 +120,58 @@ INSERT IGNORE INTO video (title, description, isVisibility, originalFilename,
     '2025-01-22 10:50:00', '2025-01-22 10:50:00'),
 
 ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+       ('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
     '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
     '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
 

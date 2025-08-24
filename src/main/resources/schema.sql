@@ -103,19 +103,18 @@ CREATE TABLE IF NOT EXISTS video
     idx INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
     description TEXT,
-    isVisibility BOOLEAN NOT NULL DEFAULT TRUE,
-    originalFilename VARCHAR(255) NOT NULL,
-    originalPath VARCHAR(500) NOT NULL,
-    originalSize BIGINT NOT NULL,
-    contentType VARCHAR(100) NOT NULL,
-    savedPath VARCHAR(500),
-    savedSize BIGINT,
-    videoStatus VARCHAR(50) NOT NULL,
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-    FULLTEXT INDEX ft_title_description (title, description)
+    is_visibility BOOLEAN NOT NULL DEFAULT TRUE,
+    original_filename VARCHAR(255) NOT NULL,
+    original_path VARCHAR(500) NOT NULL,
+    original_size BIGINT NOT NULL,
+    content_type VARCHAR(100) NOT NULL,
+    saved_path VARCHAR(500),
+    saved_size BIGINT,
+    video_status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
     );
+ALTER TABLE video ADD FULLTEXT INDEX ft_title_description (title, description);
 
 -- VideoComment 테이블 생성
 CREATE TABLE IF NOT EXISTS video_comment
