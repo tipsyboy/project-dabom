@@ -55,12 +55,8 @@ public class Together {
         this.title = title;
     }
 
-    public void changeTogetherPrivate() {
-        this.isOpen = false;
-    }
-
-    public void changeTogetherPublic() {
-        this.isOpen = true;
+    public void changeTogetherIsOpen(Boolean isOpen) {
+        this.isOpen = isOpen;
     }
 
     public void changeMaxMemberNumber(int maxNumber) {
