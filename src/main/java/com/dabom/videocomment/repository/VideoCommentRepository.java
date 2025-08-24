@@ -12,4 +12,6 @@ public interface VideoCommentRepository extends JpaRepository<VideoComment, Inte
     List<VideoComment> findByVideo_IdxAndIsDeletedFalse(Integer videoIdx);
 
     Slice<VideoComment> findByVideo_IdxAndIsDeletedFalse(Integer videoIdx, Pageable pageable);
+
+    Slice<VideoComment> findByVideo_IdxAndIsDeletedFalseOrderByLikesDesc(Integer videoIdx, Pageable pageable);
 }
