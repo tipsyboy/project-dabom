@@ -53,7 +53,13 @@ public class TogetherJoinMemberService {
                 .map(TogetherJoinMember::getTogether)
                 .toList();
         return TogetherListResponseDto.toDto(togetherList);
+    }
 
+    public TogetherListResponseDto getTogethersFromMaster(MemberDetailsDto memberDetailsDto) {
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+        List<Together> togethers = togetherRepository.findByMaster(member);
+
+        return TogetherListResponseDto.toDto(togethers);
     }
 
     public TogetherJoinInfoResponseDto loginTogetherMember(Integer togetherIdx, Member member) {

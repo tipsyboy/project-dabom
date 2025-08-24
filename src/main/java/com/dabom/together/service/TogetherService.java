@@ -63,6 +63,28 @@ public class TogetherService {
     }
 
     @Transactional
+    public TogetherInfoResponseDto changeIsOpen(Integer togetherIdx, TogetherChangeIsOpenRequestDto dto,
+                                                   MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
+
+        together.changeTogetherIsOpen(dto.getIsOpen());
+        Together save = togetherRepository.save(together);
+
+        return TogetherInfoResponseDto.toDto(save);
+    }
+
+    @Transactional
+    public TogetherInfoResponseDto changeVideo(Integer togetherIdx, TogetherChangeVideoRequestDto dto,
+                                                MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
+
+        together.changeVideo(dto.getVideoUrl());
+        Together save = togetherRepository.save(together);
+
+        return TogetherInfoResponseDto.toDto(save);
+    }
+
+    @Transactional
     public TogetherInfoResponseDto kickTogetherMember(Integer togetherIdx, TogetherKickMemberRequestDto dto,
                                    MemberDetailsDto memberDetailsDto) {
         Together together = validMasterMember(togetherIdx, memberDetailsDto);

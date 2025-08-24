@@ -2,7 +2,6 @@ package com.dabom.together.controller;
 
 import com.dabom.common.BaseResponse;
 import com.dabom.member.security.dto.MemberDetailsDto;
-import com.dabom.member.service.MemberService;
 import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
@@ -37,6 +36,12 @@ public class TogetherController {
     @GetMapping("/member")
     public ResponseEntity<BaseResponse<TogetherListResponseDto>> getTogetherListInMember(@AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         TogetherListResponseDto togetherListResponseDto = togetherJoinMemberService.getTogethersFromMember(memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(togetherListResponseDto, HttpStatus.OK));
+    }
+
+    @GetMapping("/my_room")
+    public ResponseEntity<BaseResponse<TogetherListResponseDto>> getTogetherListInMaster(@AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherListResponseDto togetherListResponseDto = togetherJoinMemberService.getTogethersFromMaster(memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(togetherListResponseDto, HttpStatus.OK));
     }
 
@@ -82,6 +87,22 @@ public class TogetherController {
                                                                                      @RequestBody TogetherChangeMaxMemberRequestDto dto,
                                                                                      @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         TogetherInfoResponseDto togetherInfoResponseDto = togetherService.changeMaxMember(togetherIdx, dto, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(togetherInfoResponseDto, HttpStatus.OK));
+    }
+
+    @PatchMapping("/{togetherIdx}/change/open")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> changeTogetherIsOpen(@PathVariable Integer togetherIdx,
+                                                                                      @RequestBody TogetherChangeIsOpenRequestDto dto,
+                                                                                      @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto togetherInfoResponseDto = togetherService.changeIsOpen(togetherIdx, dto, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(togetherInfoResponseDto, HttpStatus.OK));
+    }
+
+    @PatchMapping("/{togetherIdx}/change/video")
+    public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> changeTogetherVideo(@PathVariable Integer togetherIdx,
+                                                                                      @RequestBody TogetherChangeVideoRequestDto dto,
+                                                                                      @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherInfoResponseDto togetherInfoResponseDto = togetherService.changeVideo(togetherIdx, dto, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(togetherInfoResponseDto, HttpStatus.OK));
     }
 
