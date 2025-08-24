@@ -12,36 +12,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class SearchService {
     private final VideoRepository videoRepository;
 
-    public SliceBaseResponse<SearchResponseDto> list(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Slice<Video> videoSlice = videoRepository.findVisibleVideosOrderByCreatedAtDesc(pageable);
-        // VideoStatus videoStatus 매게 변수에 넣어주기
 
-        List<SearchResponseDto> result = videoSlice.stream().map(SearchResponseDto::from)
-                .toList();
-        return new SliceBaseResponse<SearchResponseDto>(result, videoSlice.hasNext());
-    }
-
-    public SliceBaseResponse<SearchResponseDto> search(String keyword, Integer page, Integer size) {
+    public SliceBaseResponse<SearchResponseDto> getVideos(String keyword, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Slice<Video> videoSlice;
 
         if (keyword == null || keyword.trim().isEmpty()) {
-            return list(page, size);
+            videoSlice = videoRepository.findVisibleVideosOrderByCreatedAtDesc(pageable);
+        } else {
+            videoSlice = videoRepository.searchByKeywordOrderByRelevance(keyword.trim(), pageable);
         }
-
-        videoSlice = videoRepository.searchByKeywordOrderByRelevance(keyword.trim(), pageable);
 
         List<SearchResponseDto> result = videoSlice.stream()
                 .map(SearchResponseDto::from)
                 .toList();
+
         return new SliceBaseResponse<>(result, videoSlice.hasNext());
     }
-
 }

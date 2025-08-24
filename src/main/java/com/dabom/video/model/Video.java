@@ -15,11 +15,9 @@ public class Video extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
-
     private String title;
     private String description;
     private boolean isVisibility;
-
     private String originalFilename;  // 업로드한 원본 파일 이름 (예: user_uploaded.mp4)
     private String originalPath;
     private Long originalSize;

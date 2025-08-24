@@ -22,24 +22,16 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    @GetMapping("/list")
-    public ResponseEntity<BaseResponse<SliceBaseResponse<SearchResponseDto>>> list(
+    @GetMapping("/videos")
+    public ResponseEntity<BaseResponse<SliceBaseResponse<SearchResponseDto>>> getVideos(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
 
-        SliceBaseResponse<SearchResponseDto> result = searchService.list(page, size);
+        SliceBaseResponse<SearchResponseDto> result = searchService.getVideos(keyword, page, size);
+
         return ResponseEntity.ok(
-                BaseResponse.of(
-                        result, HttpStatus.OK, ""));
+                BaseResponse.of(result, HttpStatus.OK, "비디오 조회 완료"));
     }
 
-    @GetMapping("/videos")
-    public ResponseEntity<BaseResponse<SliceBaseResponse<SearchResponseDto>>> search(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size, ServletResponse servletResponse) {
-
-        SliceBaseResponse<SearchResponseDto> result = searchService.search(keyword, page, size);
-        return ResponseEntity.ok(BaseResponse.of(result,HttpStatus.OK,"비디오조회완료"));
-    }
 }
