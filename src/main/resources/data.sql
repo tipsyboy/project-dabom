@@ -80,17 +80,50 @@ INSERT IGNORE INTO board_comment (content, board_idx, is_deleted, created_at, up
 ('피드백 제출 완료!', 10, FALSE, '2025-08-19 09:25:00', '2025-08-19 09:25:00');
 
 -- Video 테이블 데이터 삽입 (10개)
-INSERT IGNORE INTO video (title, description, is_visibility, original_filename, saved_path, content_type, size, encoding_status, created_at, updated_at) VALUES
-('다봄 서비스 소개 영상', '다봄 서비스를 소개합니다. 많은 이용 바랍니다.', TRUE, 'intro.mp4', '/videos/intro.m3u8', 'application/x-mpegURL', 5242880, 'COMPLETED', '2025-08-19 07:35:35', '2025-08-19 07:35:35'),
-('샘플 영상', '테스트용 샘플 영상입니다.', TRUE, 'sample.mp4', '/videos/sample.m3u8', 'application/x-mpegURL', 7864320, 'COMPLETED', '2025-08-19 07:35:35', '2025-08-19 07:35:35'),
-('다봄 사용 튜토리얼', '다봄 플랫폼 사용 방법을 안내합니다.', TRUE, 'tutorial.mp4', '/videos/tutorial.m3u8', 'application/x-mpegURL', 6291456, 'COMPLETED', '2025-08-19 08:00:00', '2025-08-19 08:00:00'),
-('이벤트 프로모션 영상', '다봄 이벤트 프로모션 영상입니다.', TRUE, 'event.mp4', '/videos/event.m3u8', 'application/x-mpegURL', 8388608, 'COMPLETED', '2025-08-19 08:10:00', '2025-08-19 08:10:00'),
-('사용자 인터뷰', '다봄 사용자들의 생생한 인터뷰!', TRUE, 'interview.mp4', '/videos/interview.m3u8', 'application/x-mpegURL', 9437184, 'COMPLETED', '2025-08-19 08:20:00', '2025-08-19 08:20:00'),
-('비디오 업로드 가이드', '효율적인 비디오 업로드 방법을 알려드립니다.', TRUE, 'upload_guide.mp4', '/videos/upload_guide.m3u8', 'application/x-mpegURL', 5242880, 'COMPLETED', '2025-08-19 08:30:00', '2025-08-19 08:30:00'),
-('다봄 라이브 스트리밍', '다봄의 라이브 스트리밍 테스트 영상입니다.', TRUE, 'live.mp4', '/videos/live.m3u8', 'application/x-mpegURL', 10485760, 'COMPLETED', '2025-08-19 08:40:00', '2025-08-19 08:40:00'),
-('커뮤니티 하이라이트', '다봄 커뮤니티의 하이라이트 영상입니다.', TRUE, 'highlight.mp4', '/videos/highlight.m3u8', 'application/x-mpegURL', 7340032, 'COMPLETED', '2025-08-19 08:50:00', '2025-08-19 08:50:00'),
-('신규 기능 소개', '다봄의 새로운 기능을 소개합니다.', TRUE, 'new_feature.mp4', '/videos/new_feature.m3u8', 'application/x-mpegURL', 6815744, 'COMPLETED', '2025-08-19 09:00:00', '2025-08-19 09:00:00'),
-('사용자 제작 콘텐츠', '다봄 사용자들의 창의적인 콘텐츠!', TRUE, 'user_content.mp4', '/videos/user_content.m3u8', 'application/x-mpegURL', 8912896, 'COMPLETED', '2025-08-19 09:10:00', '2025-08-19 09:10:00');
+-- Video 테이블 데이터 삽입 (10개)
+INSERT IGNORE INTO video (title, description, isVisibility, originalFilename,
+    originalPath, originalSize, contentType, savedPath, savedSize, videoStatus,
+    createdAt, updatedAt) VALUES
+
+('다봄 서비스 소개 영상', '다봄 플랫폼의 주요 기능과 특징을 소개하는 영상입니다.', TRUE, 'intro.mp4',
+    '/temp/2025/01/15/uuid1/intro.mp4', 15728640, 'video/mp4', '/videos/2025/01/15/uuid1/index.m3u8', 16000000, 'DONE',
+    '2025-01-15 10:30:00', '2025-01-15 10:30:00'),
+
+('Spring Boot 튜토리얼', 'Spring Boot 기초부터 심화까지 완벽 가이드', TRUE, 'springboot_tutorial.mp4',
+    '/temp/2025/01/16/uuid2/springboot_tutorial.mp4', 52428800, 'video/mp4', '/videos/2025/01/16/uuid2/index.m3u8', 53000000, 'DONE',
+    '2025-01-16 14:20:00', '2025-01-16 14:20:00'),
+
+('React 입문 강의', 'React 컴포넌트와 Hook을 활용한 모던 웹 개발', TRUE, 'react_basics.mp4',
+    '/temp/2025/01/17/uuid3/react_basics.mp4', 41943040, 'video/mp4', '/videos/2025/01/17/uuid3/index.m3u8', 42500000, 'DONE',
+    '2025-01-17 09:15:00', '2025-01-17 09:15:00'),
+
+('데이터베이스 설계 원칙', 'RDB 설계의 기본 원칙과 정규화 과정 설명', TRUE, 'database_design.mp4',
+    '/temp/2025/01/18/uuid4/database_design.mp4', 33554432, 'video/mp4', '/videos/2025/01/18/uuid4/index.m3u8', 34000000, 'DONE',
+    '2025-01-18 16:45:00', '2025-01-18 16:45:00'),
+
+('Docker 컨테이너 활용법', 'Docker를 이용한 개발 환경 구축과 배포 전략', TRUE, 'docker_guide.mp4',
+    '/temp/2025/01/19/uuid5/docker_guide.mp4', 62914560, 'video/mp4', '/videos/2025/01/19/uuid5/index.m3u8', 63500000, 'DONE',
+    '2025-01-19 11:30:00', '2025-01-19 11:30:00'),
+
+('알고리즘 문제 해결', '코딩테스트 대비 핵심 알고리즘 풀이', FALSE, 'algorithm_solving.mp4',
+    '/temp/2025/01/20/uuid6/algorithm_solving.mp4', 73400320, 'video/mp4', '/videos/2025/01/20/uuid6/index.m3u8', 74000000, 'DONE',
+    '2025-01-20 13:20:00', '2025-01-20 13:20:00'),
+
+('웹 보안 기초', 'HTTPS, JWT, CORS 등 웹 보안의 핵심 개념', TRUE, 'web_security.mp4',
+    '/temp/2025/01/21/uuid7/web_security.mp4', 45097984, 'video/mp4', '/videos/2025/01/21/uuid7/index.m3u8', 45600000, 'DONE',
+    '2025-01-21 15:10:00', '2025-01-21 15:10:00'),
+
+('Git 브랜치 전략', '효과적인 Git 브랜치 관리와 협업 워크플로우', TRUE, 'git_branching.mp4',
+    '/temp/2025/01/22/uuid8/git_branching.mp4', 29360128, 'video/mp4', '/videos/2025/01/22/uuid8/index.m3u8', 30000000, 'DONE',
+    '2025-01-22 10:50:00', '2025-01-22 10:50:00'),
+
+('API 설계 가이드', 'RESTful API 설계 원칙과 OpenAPI 문서화', TRUE, 'api_design.mp4',
+    '/temp/2025/01/23/uuid9/api_design.mp4', 56623104, 'video/mp4', '/videos/2025/01/23/uuid9/index.m3u8', 57200000, 'ENCODING',
+    '2025-01-23 14:40:00', '2025-01-23 14:40:00'),
+
+('클라우드 배포 실습', 'AWS를 활용한 웹 애플리케이션 배포 과정', FALSE, 'cloud_deploy.mp4',
+    '/temp/2025/01/24/uuid10/cloud_deploy.mp4', 83886080, 'video/mp4', NULL, NULL, 'ENCODING_PENDING',
+    '2025-01-24 12:15:00', '2025-01-24 12:15:00');
 
 -- VideoComment 테이블 데이터 삽입 (40개, 비디오별 3~5개)
 INSERT IGNORE INTO video_comment (content, video_idx, is_deleted, created_at, updated_at) VALUES

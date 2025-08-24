@@ -1,4 +1,5 @@
 -- 테이블 삭제 (의존성 역순으로 삭제하여 외래 키 제약 충돌 방지)
+SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS board_comment;
 DROP TABLE IF EXISTS channel_board;
 DROP TABLE IF EXISTS video_comment;
@@ -6,6 +7,7 @@ DROP TABLE IF EXISTS video;
 DROP TABLE IF EXISTS subscribe;
 DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS member;
+SET foreign_key_checks = 1;
 
 -- Member 테이블 생성
 CREATE TABLE IF NOT EXISTS member (
@@ -98,37 +100,21 @@ CREATE TABLE IF NOT EXISTS board_comment
 -- Video 테이블 생성
 CREATE TABLE IF NOT EXISTS video
 (
-    idx
-    INT
-    AUTO_INCREMENT
-    PRIMARY
-    KEY,
-    title
-    VARCHAR
-(
-    255
-) NOT NULL,
+    idx INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
     description TEXT,
-    is_visibility BOOLEAN NOT NULL DEFAULT TRUE,
-    original_filename VARCHAR
-(
-    255
-) NOT NULL,
-    saved_path VARCHAR
-(
-    255
-) NOT NULL,
-    content_type VARCHAR
-(
-    100
-) NOT NULL,
-    size BIGINT NOT NULL,
-    encoding_status VARCHAR
-(
-    50
-) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+    isVisibility BOOLEAN NOT NULL DEFAULT TRUE,
+    originalFilename VARCHAR(255) NOT NULL,
+    originalPath VARCHAR(500) NOT NULL,
+    originalSize BIGINT NOT NULL,
+    contentType VARCHAR(100) NOT NULL,
+    savedPath VARCHAR(500),
+    savedSize BIGINT,
+    videoStatus VARCHAR(50) NOT NULL,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+    FULLTEXT INDEX ft_title_description (title, description)
     );
 
 -- VideoComment 테이블 생성
