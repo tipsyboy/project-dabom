@@ -20,6 +20,9 @@ public class VideoComment extends BaseEntity {
     private String content;
     private Boolean isDeleted;
 
+    @Column
+    private Integer likes = 0; // 인기순 정렬용
+
     @ManyToOne
     @JoinColumn(name = "video_idx")
     private Video video;
@@ -29,11 +32,12 @@ public class VideoComment extends BaseEntity {
     private Member member;
 
     @Builder
-    public VideoComment(String content, Video video, Member member, Boolean isDeleted) {
+    public VideoComment(String content, Video video, Member member, Boolean isDeleted, Integer likes) {
         this.content = content;
         this.video = video;
         this.member = member;
-        this.isDeleted = false;
+        this.isDeleted = isDeleted != null ? isDeleted : false;
+        this.likes = likes != null ? likes : 0;
     }
 
     public void delete() {
@@ -44,12 +48,12 @@ public class VideoComment extends BaseEntity {
         this.content = content;
     }
 
-    // DTO 변환용
     public static VideoComment from(VideoComment entity) {
         return VideoComment.builder()
                 .content(entity.getContent())
                 .video(entity.getVideo())
                 .member(entity.getMember())
+                .likes(entity.getLikes())
                 .build();
     }
 }

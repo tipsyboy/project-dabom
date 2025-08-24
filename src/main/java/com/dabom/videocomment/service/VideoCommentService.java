@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -43,12 +41,17 @@ public class VideoCommentService {
     public void deleted(Integer idx) {
         VideoComment videoComment = videoCommentRepository.findById(idx)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + idx));
-        videoComment.delete(); // 메서드 이름 수정
+        videoComment.delete();
         videoCommentRepository.save(videoComment);
     }
 
-    public Slice<VideoCommentResponseDto> list(Integer videoIdx,  Pageable pageable) {
-        Slice<VideoComment> result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalse(videoIdx, pageable);
+    public Slice<VideoCommentResponseDto> list(Integer videoIdx, Pageable pageable) {
+        Slice<VideoComment> result;
+        if (pageable.getSort().getOrderFor("likes") != null) {
+            result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalseOrderByLikesDesc(videoIdx, pageable);
+        } else {
+            result = videoCommentRepository.findByVideo_IdxAndIsDeletedFalse(videoIdx, pageable);
+        }
         return result.map(VideoCommentResponseDto::from);
     }
 
@@ -57,9 +60,14 @@ public class VideoCommentService {
         VideoComment entity = videoCommentRepository.findById(commentIdx)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + commentIdx));
 
-        dto.toEntity(entity); // 기존 엔티티 수정
+        dto.toEntity(entity);
         videoCommentRepository.save(entity);
 
         return entity.getIdx();
+    }
+
+    public VideoComment findById(Integer commentIdx) {
+        return videoCommentRepository.findById(commentIdx)
+                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + commentIdx));
     }
 }
