@@ -1,6 +1,7 @@
 package com.dabom.video.service;
 
 import com.dabom.video.model.Video;
+import com.dabom.video.model.dto.VideoInfoResponseDto;
 import com.dabom.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +15,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class VideoSegmentService {
+@Service
+public class VideoStreamService {
 
     private final VideoRepository videoRepository;
+
+    public Resource stream(Integer videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new IllegalArgumentException("비디오 못찾음"));
+
+        Path m3u8Path = Paths.get(video.getSavedPath());
+
+        if (!Files.exists(m3u8Path)) {
+            throw new IllegalArgumentException("파일이 없음");
+        }
+
+        return new FileSystemResource(m3u8Path);
+    }
 
     /**
      * 세그먼트 파일 리소스 조회
@@ -59,5 +73,10 @@ public class VideoSegmentService {
         Path m3u8Path = Paths.get(video.getSavedPath());
         return m3u8Path.getParent();
     }
-}
 
+    public VideoInfoResponseDto getVideoInfo(Integer videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new IllegalArgumentException("비디오 못찾음"));
+        return VideoInfoResponseDto.toDto(video);
+    }
+}
