@@ -1,5 +1,6 @@
 package com.dabom.chat.model.entity;
 
+import com.dabom.chat.model.dto.ChatMessageDto;
 import com.dabom.common.BaseEntity;
 import com.dabom.member.model.entity.Member;
 import jakarta.persistence.*;
@@ -53,5 +54,14 @@ public class Chat extends BaseEntity {
 
     public void deleteMessage() {
         this.isDeleted = true;
+    }
+
+    public static Chat from(ChatMessageDto messageDto,ChatRoom room,Member sender,Member recipient) {
+        return Chat.builder()
+                .message(messageDto.getMessage())
+                .room(room)
+                .sender(sender)
+                .recipient(recipient)
+                .build();
     }
 }

@@ -1,7 +1,6 @@
 package com.dabom.chat.model.dto;
 
 import com.dabom.chat.model.entity.Chat;
-import com.dabom.chat.model.entity.ChatRoom;
 import com.dabom.common.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +19,7 @@ public class ChatMessageDto extends BaseEntity {
     private Boolean isRead;
     private LocalDateTime createdAt;
 
+
     public static ChatMessageDto fromEntity(Chat entity) {
         return ChatMessageDto.builder()
                 .roomIdx(entity.getRoom().getIdx())
@@ -32,5 +32,4 @@ public class ChatMessageDto extends BaseEntity {
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
-
 }
