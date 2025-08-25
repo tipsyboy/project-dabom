@@ -12,26 +12,34 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequiredArgsConstructor
 public class TogetherChatController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MemberService memberService;
+    private final Map<String, Set<Integer>> topicSessions = new ConcurrentHashMap<>();
 
     @MessageMapping("/together/{togetherId}")
     public void sendMessage(Principal principal,
             @DestinationVariable Integer togetherId, @Payload String message) {
-        System.out.println(message);
-
         Authentication authentication = (Authentication)principal;
         MemberDetailsDto memberDetailsDto = (MemberDetailsDto)authentication.getPrincipal();
+
         MemberInfoResponseDto memberInfo = memberService.getMemberInfo(memberDetailsDto);
-        TogetherChatResponseDto res = TogetherChatResponseDto.toDtoBySend(memberInfo.name(), message);
+        String destination = "/topic/together/" + togetherId; // 토픽 키
+        int userCount = topicSessions.getOrDefault(destination, Collections.emptySet()).size();
+
+        TogetherChatResponseDto res = TogetherChatResponseDto.toDtoBySend(memberInfo.name(), message, userCount);
 
         messagingTemplate.convertAndSend("/topic/together/" + togetherId, res);
     }
@@ -39,15 +47,23 @@ public class TogetherChatController {
     @EventListener
     public void handleSubscribeEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        String sessionId = headerAccessor.getSessionId();
         Principal userPrincipal = headerAccessor.getUser();
-        Authentication authentication = (Authentication)userPrincipal;
-        MemberDetailsDto memberDetailsDto = (MemberDetailsDto)authentication.getPrincipal();
-        MemberInfoResponseDto memberInfo = memberService.getMemberInfo(memberDetailsDto);
         String destination = headerAccessor.getDestination();
 
         if (destination != null && destination.startsWith("/topic/together/")) {
-            // 새로 접속한 사용자를 포함한 모든 구독자에게 환영 메시지 전송
-            TogetherChatResponseDto welcome = TogetherChatResponseDto.toDtoByJoin(memberInfo.name());
+            // 환영 메시지 생성
+            Authentication authentication = (Authentication) userPrincipal;
+            MemberDetailsDto memberDetailsDto = (MemberDetailsDto) authentication.getPrincipal();
+            MemberInfoResponseDto memberInfo = memberService.getMemberInfo(memberDetailsDto);
+
+            // 토픽별 접속자 세션 관리
+            topicSessions.computeIfAbsent(destination, k -> ConcurrentHashMap.newKeySet()).add(memberInfo.id());
+
+            Integer userCount = topicSessions.get(destination).size();
+
+            TogetherChatResponseDto welcome = TogetherChatResponseDto.toDtoByJoin(memberInfo.name(), userCount);
+
             messagingTemplate.convertAndSend(destination, welcome);
         }
     }

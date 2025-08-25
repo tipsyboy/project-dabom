@@ -65,7 +65,7 @@ public class TogetherController {
     @PostMapping("/{togetherIdx}")
     public ResponseEntity<BaseResponse<TogetherInfoResponseDto>> joinOpenTogether(@PathVariable Integer togetherIdx,
                                                            @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
-        TogetherInfoResponseDto responseDto = togetherJoinMemberService.joinTogetherMember(togetherIdx, memberDetailsDto);
+        TogetherInfoResponseDto responseDto = togetherJoinMemberService.joinNewTogetherMember(togetherIdx, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
     }
 
