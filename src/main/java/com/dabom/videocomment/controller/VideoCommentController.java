@@ -25,7 +25,7 @@ import org.springframework.data.domain.Sort;
 import static com.dabom.videocomment.constansts.SwaggerConstants.*;
 
 @Tag(name = "영상 하단 게시판 기능")
-@RequestMapping("/api")
+@RequestMapping("/api/videos/comment/")
 @RestController
 @RequiredArgsConstructor
 public class VideoCommentController {
@@ -37,10 +37,10 @@ public class VideoCommentController {
             description = "특정 영상에 댓글을 등록한다")
     @ApiResponse(responseCode = "200", description = "댓글 등록 성공")
     @ApiResponse(responseCode = "400", description = "댓글 등록 실패")
-    @PostMapping("/videocomment/register")
+    @PostMapping("/register/{videoIdx}")
     public ResponseEntity<BaseResponse<Integer>> register(
             @RequestBody VideoCommentRegisterDto dto,
-            @RequestParam Integer videoIdx,
+            @PathVariable Integer videoIdx,
             @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
 
         Integer idx = videoCommentService.register(dto, videoIdx, memberDetailsDto.getIdx());
@@ -55,7 +55,7 @@ public class VideoCommentController {
             description = "댓글 조회 - 최신순/오래된순/인기순")
     @ApiResponse(responseCode = "200", description = "댓글 조회 성공")
     @ApiResponse(responseCode = "400", description = "댓글 조회 실패")
-    @GetMapping("/videos/{videoIdx}/comments")
+    @GetMapping("/list/{videoIdx}/paged")
     public ResponseEntity<BaseResponse<Slice<VideoCommentResponseDto>>> list(
             @PathVariable Integer videoIdx,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -70,7 +70,7 @@ public class VideoCommentController {
             description = "특정 댓글을 소프트 삭제")
     @ApiResponse(responseCode = "200", description = "댓글 삭제 성공")
     @ApiResponse(responseCode = "400", description = "댓글 삭제 실패")
-    @DeleteMapping("/comments/{commentIdx}")
+    @DeleteMapping("/delete/{commentIdx}")
     public ResponseEntity<BaseResponse<Void>> delete(
             @PathVariable Integer commentIdx,
             @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
