@@ -48,27 +48,6 @@ public class VideoUploadService {
         Video savedVideo = videoRepository.save(video);
         savedVideo.updateVideoStatus(VideoStatus.UPLOADED);
         return savedVideo.getIdx();
-
-//        // 2. ffmpeg service에 HLS 인코딩 요청
-//        String hlsOutputDir = createHlsDir(uuid);
-//
-//        // 3. 비동기 인코딩 시작 (백그라운드)
-////        ffmpegService.encodeToHls(Paths.get(savedTempPath), Paths.get(hlsOutputDir));
-//        ffmpegEncoder.encodeToHlsAsync(Paths.get(savedTempPath), Paths.get(hlsOutputDir))
-//                .thenAccept(m3u8Path -> {
-//                    // 성공 시 (별도 스레드에서 실행)
-//                    log.info("인코딩 완료: {}", m3u8Path);
-//                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.COMPLETED, m3u8Path.toString());
-//                    sendNotification(videoId, "인코딩이 완료되었습니다.");
-//                })
-//                .exceptionally(throwable -> {
-//                    // 실패 시 (별도 스레드에서 실행)
-//                    log.error("인코딩 실패", throwable);
-//                    videoStatusManager.updateVideoRecord(videoId, EncodingStatus.FAILED, null);
-//                    sendNotification(videoId, "인코딩이 실패했습니다.");
-//                    return null;
-//                });
-
     }
 
     // ===== ===== //
