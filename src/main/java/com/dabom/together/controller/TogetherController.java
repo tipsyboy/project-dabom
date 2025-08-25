@@ -5,6 +5,7 @@ import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
+import com.dabom.together.model.dto.response.TogetherMasterResponseDto;
 import com.dabom.together.model.dto.response.TogetherMemberListResponseDto;
 import com.dabom.together.service.TogetherJoinMemberService;
 import com.dabom.together.service.TogetherService;
@@ -68,11 +69,18 @@ public class TogetherController {
         return ResponseEntity.ok(BaseResponse.of(responseDto, HttpStatus.OK));
     }
 
-    @GetMapping("/{togetherIdx}/master")
+    @GetMapping("/{togetherIdx}/master/member")
     public ResponseEntity<BaseResponse<TogetherMemberListResponseDto>> getTogetherListFromMaster(@PathVariable Integer togetherIdx,
                                                                               @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
         TogetherMemberListResponseDto members = togetherService.getTogetherMembersFromMaster(togetherIdx, memberDetailsDto);
         return ResponseEntity.ok(BaseResponse.of(members, HttpStatus.OK));
+    }
+
+    @GetMapping("/{togetherIdx}/master")
+    public ResponseEntity<BaseResponse<TogetherMasterResponseDto>> isMaster(@PathVariable Integer togetherIdx,
+                                                                                @AuthenticationPrincipal MemberDetailsDto memberDetailsDto) {
+        TogetherMasterResponseDto master = togetherService.isMaster(togetherIdx, memberDetailsDto);
+        return ResponseEntity.ok(BaseResponse.of(master, HttpStatus.OK));
     }
 
     @GetMapping("/{togetherIdx}")

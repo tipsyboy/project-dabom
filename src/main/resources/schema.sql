@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS member (
                                       idx INT AUTO_INCREMENT PRIMARY KEY,
                                       email VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255),
     content TEXT,  -- Added content column, nullable
     member_role VARCHAR(50) NOT NULL,
     sum_score BIGINT NOT NULL DEFAULT 0,

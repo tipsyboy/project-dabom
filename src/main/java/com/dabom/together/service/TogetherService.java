@@ -6,6 +6,7 @@ import com.dabom.member.security.dto.MemberDetailsDto;
 import com.dabom.together.model.dto.request.*;
 import com.dabom.together.model.dto.response.TogetherInfoResponseDto;
 import com.dabom.together.model.dto.response.TogetherListResponseDto;
+import com.dabom.together.model.dto.response.TogetherMasterResponseDto;
 import com.dabom.together.model.dto.response.TogetherMemberListResponseDto;
 import com.dabom.together.model.entity.Together;
 import com.dabom.together.model.entity.TogetherJoinMember;
@@ -85,6 +86,12 @@ public class TogetherService {
         Together together = validMasterMember(togetherIdx, memberDetailsDto);
 
         return TogetherMemberListResponseDto.toDto(together);
+    }
+
+    public TogetherMasterResponseDto isMaster(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = validMasterMember(togetherIdx, memberDetailsDto);
+
+        return TogetherMasterResponseDto.isMasterMember();
     }
 
     @Transactional
