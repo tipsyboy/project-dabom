@@ -41,15 +41,15 @@ public class JwtHandShakeInterceptor implements HandshakeInterceptor {
             Cookie[] cookies = httpReq.getCookies();
 
             String jwt = findDabomJWT(cookies);
-            exceptionHandler(jwt);
+            exceptionHandler(jwt, attributes);
         }
         return true;
     }
 
 
-    private void exceptionHandler(String jwt) {
+    private void exceptionHandler(String jwt, Map<String, Object> attributes) {
         try {
-            haveTokenLogic(jwt);
+            haveTokenLogic(jwt, attributes);
         } catch (ExpiredJwtException e) {
             // 만료 토큰 302 Redirect로 RefreshToken
         } catch (SecurityException | MalformedJwtException e) {
@@ -74,14 +74,14 @@ public class JwtHandShakeInterceptor implements HandshakeInterceptor {
         return jwt;
     }
 
-    private void haveTokenLogic(String jwt) {
+    private void haveTokenLogic(String jwt, Map<String, Object> attributes) {
         if (jwt != null) {
             Claims claims = JwtUtils.getClaims(jwt);
-            haveDabomTokenLogic(claims);
+            haveDabomTokenLogic(claims, attributes);
         }
     }
 
-    private void haveDabomTokenLogic(Claims claims) {
+    private void haveDabomTokenLogic(Claims claims, Map<String, Object> attributes) {
         if (claims != null) {
             MemberDetailsDto dto = createDetailsFromToken(claims);
 
@@ -92,6 +92,7 @@ public class JwtHandShakeInterceptor implements HandshakeInterceptor {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            attributes.put("auth", authentication);
         }
     }
 

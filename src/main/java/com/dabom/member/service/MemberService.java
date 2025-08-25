@@ -60,6 +60,11 @@ public class MemberService {
         return MemberChannelNameCheckResponseDto.of(true);
     }
 
+    public MemberInfoResponseDto getMemberInfo(MemberDetailsDto dto) {
+        Member member = repository.findById(dto.getIdx()).orElseThrow();
+        return MemberInfoResponseDto.toDto(member);
+    }
+
     @Transactional
     public void updateMemberName(MemberDetailsDto memberDetailsDto, MemberUpdateChannelRequestDto dto) {
         Member member = getMemberFromSecurity(memberDetailsDto);
