@@ -26,6 +26,23 @@ public class TogetherJoinMemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
+    public TogetherInfoResponseDto joinNewTogetherMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
+        Together together = togetherRepository.findById(togetherIdx).orElseThrow();
+        Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
+        TogetherJoinMember entity = TogetherJoinMember.builder()
+                .member(member)
+                .together(together)
+                .isJoin(true)
+                .isDelete(false)
+                .build();
+
+        togetherJoinMemberRepository.save(entity);
+        together.joinMember();
+        togetherRepository.save(together);
+
+        return TogetherInfoResponseDto.toDto(together);
+    }
+
     public TogetherInfoResponseDto joinTogetherMember(Integer togetherIdx, MemberDetailsDto memberDetailsDto) {
         Together together = togetherRepository.findById(togetherIdx).orElseThrow();
         Member member = memberRepository.findById(memberDetailsDto.getIdx()).orElseThrow();
