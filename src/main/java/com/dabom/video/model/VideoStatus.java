@@ -1,6 +1,7 @@
 package com.dabom.video.model;
 
 public enum VideoStatus {
+
     UPLOADING(1, "원본 파일 업로드 중"),
     UPLOADED(2, "원본 파일 업로드 완료"),
 

@@ -20,7 +20,6 @@ import java.io.IOException;
 public class VideoUploadController {
 
     private final VideoUploadService videoUploadService;
-    private final VideoEncodingService videoEncodingService;
 
     @PostMapping("/upload")
     public ResponseEntity<Integer> upload(@RequestPart MultipartFile file) throws IOException {
@@ -28,9 +27,9 @@ public class VideoUploadController {
     }
 
     // TODO: 인코딩 요청시 뭐 줄게 없는데 ??
-    @PostMapping("/encode/{videoIdx}")
-    public ResponseEntity<Void> encode(@PathVariable Integer videoIdx) throws IOException, InterruptedException {
-        videoEncodingService.addEncodingJob(videoIdx);
-        return ResponseEntity.ok(null);
-    }
+//    @PostMapping("/encode/{videoIdx}")
+//    public ResponseEntity<Void> encode(@PathVariable Integer videoIdx) throws IOException, InterruptedException {
+//        videoEncodingService.addEncodingJob(videoIdx);
+//        return ResponseEntity.ok(null);
+//    }
 }

@@ -31,31 +31,4 @@ public class VideoStreamController {
         VideoInfoResponseDto videoInfo = videoStreamService.getVideoInfo(videoId);
         return ResponseEntity.ok(BaseResponse.of(videoInfo, HttpStatus.OK));
     }
-
-    @GetMapping("/stream/{videoId}")
-    public ResponseEntity<Resource> stream(@PathVariable Integer videoId) {
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "application/vnd.apple.mpegurl")
-                .header(HttpHeaders.CACHE_CONTROL, "no-cache")
-                .body(videoStreamService.stream(videoId));
-    }
-
-    @GetMapping("/{videoId}/{segmentName}")
-    public ResponseEntity<?> getSegment(@PathVariable Integer videoId,
-                                        @PathVariable String segmentName) throws IOException {
-
-        log.debug("V4 세그먼트 요청 - videoId: {}, segmentName: {}", videoId, segmentName);
-
-        Resource segmentResource = videoStreamService.getSegmentResource(videoId, segmentName);
-        // 실제 파일 크기 계산
-        long fileSize = Files.size(segmentResource.getFile().toPath());
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "video/mp2t") // MPEG-TS MIME 타입
-                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000") // 1년 캐시
-                .header("Access-Control-Allow-Origin", "*") // CORS
-                .header("Access-Control-Allow-Methods", "GET, OPTIONS")
-                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileSize)) // 파일 크기
-                .body(segmentResource);
-    }
 }

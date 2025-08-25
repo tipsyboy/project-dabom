@@ -2,7 +2,6 @@ package com.dabom.video.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -11,11 +10,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -31,8 +28,8 @@ public class FfmpegEncoder {
     @Value("${file.ffmpeg.hls.segment-duration}")
     private int hlsSegmentDuration;
 
-    public void encode(String originalPath) throws IOException {
-        log.debug(">>>>>> start ffmpeg encoder >>>>>>");
+    public String encode(String originalPath) throws IOException {
+        log.info(">>>>>> start ffmpeg encoder >>>>>>");
 
         try {
             Path encodingDir = makeEncodingDir();
@@ -42,9 +39,19 @@ public class FfmpegEncoder {
             if (exitCode != 0) {
                 log.error("Video 인코딩 실패 (exitCode={})", exitCode);
             }
+
+            String localPath = encodingDir.resolve(INDEX_FILE_NAME).toString();
+            String webPath = localPath
+                    .replace("\\", "/")  // 백슬래시를 슬래시로 변환
+                    .replaceFirst("^videos/", "/hls/");  // videos/ 를 /hls/ 로 변환
+
+            log.info("인코딩 완료. 웹 경로: {}", webPath);
+            return webPath;
+
         } catch (Exception e) {
             log.error("Video 인코딩 중 예외 발생", e);
         }
+        return originalPath;
     }
 
     // ===== ===== //
@@ -65,7 +72,21 @@ public class FfmpegEncoder {
         );
 
         pb.redirectErrorStream(true);
-        return pb.start();
+        Process process = pb.start();
+
+        // FFmpeg 출력 로그 실시간 확인
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    log.info("FFmpeg: {}", line);
+                }
+            } catch (IOException e) {
+                log.error("FFmpeg 로그 읽기 실패", e);
+            }
+        }).start();
+
+        return process;
     }
 
     private Path makeEncodingDir() throws IOException {

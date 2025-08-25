@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,29 +19,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class VideoEncodingService {
 
     private final BlockingQueue<Integer> encodingQueue = new LinkedBlockingQueue<>();
-
     private final VideoRepository videoRepository;
     private final FfmpegEncoder ffmpegEncoder;
-
-    public void addEncodingJob(Integer videoIdx) throws InterruptedException, IOException {
-        encodingQueue.put(videoIdx);
-        log.info("video {} enqueue", videoIdx);
-        processQueueAsync(); // 작업 호출
-    }
+    private final AtomicBoolean processing = new AtomicBoolean(false);
 
     @Async("ffmpegExecutor")
-    public void processQueueAsync() throws IOException {
-        Integer videoIdx = encodingQueue.poll();
-        if (videoIdx == null) {
-            return;
-        }
-
+    public void encode(Integer videoIdx) throws IOException {
         Video video = videoRepository.findById(videoIdx)
-                .orElseThrow(() -> new IllegalArgumentException("비디오가 없습니다. idx=" + videoIdx));
+                .orElseThrow();
 
-
-        log.info("Video {} 인코딩 시작 (스레드: {})", videoIdx, Thread.currentThread().getName());
-        ffmpegEncoder.encode(video.getOriginalPath());
-        log.info("Video {} 인코딩 완료 (스레드: {})", videoIdx, Thread.currentThread().getName());
+        String savedPath = ffmpegEncoder.encode(video.getOriginalPath());
+        video.updateSavedPath(savedPath);
+        log.info("saved path={}", savedPath);
+        videoRepository.save(video); // TODO: Manager
     }
 }
